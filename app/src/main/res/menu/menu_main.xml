@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ashwinpilgaonkar.popularmovies_stage1.MainActivity" >
+
+    <group android:id="@+id/group"
+        android:checkableBehavior="single">
+
+        <item android:id="@+id/menu_action_popular"
+            android:title="@string/action_popular"
+            android:checked="true"/>
+
+        <item android:id="@+id/menu_action_rating"
+            android:title="@string/action_rating" />
+
+    </group>
+
+    <item android:id="@+id/menu_action_about"
+        android:title="@string/action_about" />
+
+</menu>
