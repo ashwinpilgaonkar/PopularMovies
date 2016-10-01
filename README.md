@@ -5,7 +5,6 @@ A simple app that shows a grid of popular movies. Created for Udacity's Android 
 - Obtain your own API Key from https://www.themoviedb.org/
 - Add your key to final String API_KEY = "API_KEY"
 - The variable is located within the GetData.java file
-- WARNING: Will cause the app to crash on startup if not added!
 
 # Features
 - Presents the user with a grid arrangement of movie posters upon launch.
