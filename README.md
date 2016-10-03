@@ -1,4 +1,4 @@
-# Popular Movies App (Stage 1)
+# Popular Movies App: Stage 1
 A simple app that shows a grid of popular movies. Created for Udacity's Android App Development Nanodegree Program.
 
 # Usage
