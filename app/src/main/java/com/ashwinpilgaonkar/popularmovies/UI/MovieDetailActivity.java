@@ -39,5 +39,4 @@ public class MovieDetailActivity extends AppCompatActivity {
         rating_textView.setText("Average Rating: "+RATING+"/10");
         overview_textView.setText(OVERVIEW);
     }
-
 }

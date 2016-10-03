@@ -5,7 +5,7 @@
     android:id="@+id/activity_movie_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ashwinpilgaonkar.popularmovies_stage1.MovieDetailActivity">
+    tools:context="com.ashwinpilgaonkar.popularmovies.UI.MovieDetailActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
