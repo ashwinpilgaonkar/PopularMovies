@@ -1,88 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_movie_detail"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ashwinpilgaonkar.popularmovies.UI.MovieDetailActivity">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/MovieListFragment"
+        android:name="com.ashwinpilgaonkar.popularmovies.UI.DetailActivityFragment"
+        tools:layout="@layout/fragment_main_activity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent" />
 
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:src="@android:drawable/ic_menu_report_image"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-        android:text="Title"
-        android:id="@+id/title_textView"
-        tools:layout_constraintLeft_creator="0"
-        tools:layout_constraintTop_creator="0"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_below="@+id/poster"
-        android:layout_centerHorizontal="true"
-        android:textStyle="normal|bold"
-        android:textSize="26sp"
-        android:textColor="#f4f4f4" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2"
-            android:layout_below="@+id/title_textView"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="11dp"
-            android:layout_marginEnd="11dp" />
-
-        <TextView
-            android:text="Release Date"
-            android:id="@+id/rdate_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="8dp"
-            android:layout_below="@+id/view2"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textSize="16sp"
-            android:textStyle="normal|bold|italic"
-            android:textColor="#cccccc" />
-
-        <TextView
-            android:text="Rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/rating_textView"
-            android:layout_marginLeft="0dp"
-            android:textSize="16sp"
-            android:layout_below="@+id/rdate_textView"
-            android:layout_alignLeft="@+id/rdate_textView"
-            android:layout_alignStart="@+id/rdate_textView"
-            android:textStyle="normal|bold|italic"
-            android:textColor="#cccccc" />
-
-         <TextView
-            android:text="Synopsis"
-            android:id="@+id/overview_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:layout_marginLeft="0dp"
-            android:layout_below="@+id/rating_textView"
-            android:layout_alignLeft="@+id/rating_textView"
-            android:layout_alignStart="@+id/rating_textView"
-            android:textSize="15sp" />
-
-    </RelativeLayout>
-</ScrollView>
+</LinearLayout>
