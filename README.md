@@ -1,4 +1,4 @@
-# Popular Movies App: Stage 2 (WIP)
+# Popular Movies App: Stage 2
 A simple app that shows a grid of popular movies. Created for Udacity's Android App Development Nanodegree Program.
 
 # Usage
@@ -17,6 +17,9 @@ A simple app that shows a grid of popular movies. Created for Udacity's Android 
     - A plot synopsis
     - user rating
     - release date
+ - Allows the user to view reviews and play trailers from the movie details screen
+ - Movies can be added to a favorites list which can be viewed offline
+ - Optimized for Tablets
     
 # Libraries Used
 - Picasso
