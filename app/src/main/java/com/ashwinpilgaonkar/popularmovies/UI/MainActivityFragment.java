@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +19,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.ashwinpilgaonkar.popularmovies.Backend.GetData;
+import com.ashwinpilgaonkar.popularmovies.Adapters.ImageAdapter;
+import com.ashwinpilgaonkar.popularmovies.Backend.FetchData;
 import com.ashwinpilgaonkar.popularmovies.R;
 
 import org.json.JSONArray;
@@ -34,6 +36,7 @@ public class MainActivityFragment extends Fragment {
     private String OVERVIEW;
     private String RDATE;
     private String RATING;
+    private String ID;
     View v;
 
     public MainActivityFragment() {
@@ -52,8 +55,8 @@ public class MainActivityFragment extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_main_activity, container, false);
 
-        //Check if Intenet connectivity is available on startup to avoid appcrash.
-         isNetworkAvailable();
+        //Check if Intenet connectivity is available on startup to avoid app crash.
+        checkNetworkConnectivity();
 
         return v;
     }
@@ -62,7 +65,6 @@ public class MainActivityFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
-        //return true;
     }
 
     @Override
@@ -115,10 +117,10 @@ public class MainActivityFragment extends Fragment {
 
     private void updateUI(final String choice){
 
-        GetData getData = new GetData(choice, getActivity());
+        FetchData fetchData = new FetchData(0, v, getActivity(), choice);
 
         try {
-            JSONObject jsonObject = new JSONObject(getData.JSONData); //Contains all data of JSON String
+            JSONObject jsonObject = new JSONObject(fetchData.MovieJSONData); //Contains all data of JSON String
             results = jsonObject.getJSONArray("results"); //Contains results of all movies in an array
 
             for(int i=0; i<results.length(); i++){
@@ -127,8 +129,7 @@ public class MainActivityFragment extends Fragment {
             }
         }
         catch (JSONException e) {
-            Toast toast = Toast.makeText(getActivity(), "JSONException Error!", Toast.LENGTH_SHORT);
-            toast.show();
+            Log.e("ASD", "JSONException");
         }
 
         //Update GridView with images
@@ -147,10 +148,12 @@ public class MainActivityFragment extends Fragment {
 
                 try {
                     JSONObject selectedMovie = results.getJSONObject(position);
+
                     TITLE = selectedMovie.getString("title");
                     OVERVIEW = selectedMovie.getString("overview");
                     RDATE = selectedMovie.getString("release_date");
                     RATING = selectedMovie.getString("vote_average");
+                    ID = selectedMovie.getString("id");
 
                 }
                 catch (JSONException e) {
@@ -163,14 +166,15 @@ public class MainActivityFragment extends Fragment {
                         .putExtra("TITLE", TITLE)
                         .putExtra("OVERVIEW", OVERVIEW)
                         .putExtra("RDATE", RDATE)
-                        .putExtra("RATING", RATING);
+                        .putExtra("RATING", RATING)
+                        .putExtra("ID", ID);
 
                 startActivity(intent);
             }
         });
     }
 
-    private void isNetworkAvailable() {
+    private void checkNetworkConnectivity() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
@@ -184,7 +188,7 @@ public class MainActivityFragment extends Fragment {
             builder.setPositiveButton("Retry",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            isNetworkAvailable();
+                            checkNetworkConnectivity();
                         }
                     });
 

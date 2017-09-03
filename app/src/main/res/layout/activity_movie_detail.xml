@@ -6,7 +6,7 @@
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/MovieListFragment"
-        android:name="com.ashwinpilgaonkar.popularmovies.UI.DetailActivityFragment"
+        android:name="com.ashwinpilgaonkar.popularmovies.UI.MovieDetailFragment"
         tools:layout="@layout/fragment_main_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -7,82 +7,206 @@
     android:layout_height="match_parent"
     tools:context="com.ashwinpilgaonkar.popularmovies.UI.MovieDetailActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:src="@android:drawable/ic_menu_report_image"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:text="Title"
-            android:id="@+id/title_textView"
-            tools:layout_constraintLeft_creator="0"
-            tools:layout_constraintTop_creator="0"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_below="@+id/poster"
-            android:layout_centerHorizontal="true"
-            android:textStyle="normal|bold"
-            android:textSize="26sp"
-            android:textColor="#f4f4f4" />
-
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:id="@+id/view2"
-            android:layout_below="@+id/title_textView"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="11dp"
-            android:layout_marginEnd="11dp" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:text="Release Date"
-            android:id="@+id/rdate_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="8dp"
-            android:layout_below="@+id/view2"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textSize="16sp"
-            android:textStyle="normal|bold|italic"
-            android:textColor="#cccccc" />
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@android:drawable/ic_menu_report_image" />
 
-        <TextView
-            android:text="Rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/rating_textView"
-            android:layout_marginLeft="0dp"
-            android:textSize="16sp"
-            android:layout_below="@+id/rdate_textView"
-            android:layout_alignLeft="@+id/rdate_textView"
-            android:layout_alignStart="@+id/rdate_textView"
-            android:textStyle="normal|bold|italic"
-            android:textColor="#cccccc" />
+            <TextView
+                android:id="@+id/title_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/poster"
+                android:layout_centerHorizontal="true"
+                android:text="Title"
+                android:textColor="#f4f4f4"
+                android:textSize="26sp"
+                android:textStyle="normal|bold"
+                tools:layout_constraintLeft_creator="0"
+                tools:layout_constraintTop_creator="0" />
 
-        <TextView
-            android:text="Synopsis"
-            android:id="@+id/overview_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:layout_marginLeft="0dp"
-            android:layout_below="@+id/rating_textView"
-            android:layout_alignLeft="@+id/rating_textView"
-            android:layout_alignStart="@+id/rating_textView"
-            android:textSize="15sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/title_textView"
+                android:layout_marginEnd="11dp"
+                android:layout_marginRight="11dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/darker_gray" />
 
-    </RelativeLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="Synopsis"
+                android:id="@+id/overview_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:layout_marginLeft="0dp"
+                android:layout_below="@+id/rating_textView"
+                android:layout_alignLeft="@+id/rating_textView"
+                android:layout_alignStart="@+id/rating_textView"
+                android:textSize="15sp" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardview"
+                android:layout_below="@+id/overview_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text="Details"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Release Date: "
+                            android:textStyle="bold"
+                            android:textSize="12dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"  />
+
+                        <TextView
+                            android:id="@+id/rdate_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rating: "
+                            android:textStyle="bold"
+                            android:textSize="12dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"  />
+
+                        <TextView
+                            android:id="@+id/rating_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/detail_trailers_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text="Trailers"
+                        android:textStyle="bold" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginTop="20dp">
+
+                        <com.linearlistview.LinearListView
+                            android:id="@+id/trailers_ListView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:clickable="true"
+                            android:orientation="horizontal"
+                            android:divider="?android:dividerHorizontal"
+                            android:showDividers="middle" />
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/detail_reviews_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text="Reviews"
+                        android:textStyle="bold" />
+
+                        <com.linearlistview.LinearListView
+                            android:id="@+id/reviews_ListView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:divider="?android:dividerHorizontal"
+                            android:showDividers="middle" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </LinearLayout>
 </ScrollView>

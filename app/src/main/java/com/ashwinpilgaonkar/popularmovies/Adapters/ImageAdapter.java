@@ -1,4 +1,4 @@
-package com.ashwinpilgaonkar.popularmovies.UI;
+package com.ashwinpilgaonkar.popularmovies.Adapters;
 
 import android.content.Context;
 import android.view.View;
@@ -12,11 +12,11 @@ import com.squareup.picasso.Picasso;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private Context mContext;
+    private Context context;
     private String[] image;
 
-    public ImageAdapter(Context c, String[] img) {
-        mContext = c;
+    public ImageAdapter(Context context, String[] img) {
+        this.context = context;
         this.image = img;
     }
 
@@ -42,7 +42,7 @@ public class ImageAdapter extends BaseAdapter {
         if (view == null) {
             // if it's not recycled, initialize some attributes
 
-            posterImage = new ImageView(mContext);
+            posterImage = new ImageView(context);
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             posterImage.setLayoutParams(new GridView.LayoutParams(params));
@@ -55,7 +55,7 @@ public class ImageAdapter extends BaseAdapter {
         else
             posterImage = (ImageView) view;
 
-        Picasso.with(mContext).load(image[position]).into(posterImage);
+        Picasso.with(context).load(image[position]).into(posterImage);
 
         return posterImage;
     }
