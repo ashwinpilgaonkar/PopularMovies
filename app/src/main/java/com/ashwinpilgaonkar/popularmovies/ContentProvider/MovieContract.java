@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
 
 public class MovieContract {
     //it should be unique in system,we use package name because it is unique
-    public static final String CONTENT_AUTHORITY = "com.wordpress.electron0zero.popularmovies";
+    public static final String CONTENT_AUTHORITY = "com.ashwinpilgaonkar.popularmovies";
 
     //base URI for content provider
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);

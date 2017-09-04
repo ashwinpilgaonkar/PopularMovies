@@ -3,12 +3,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/MovieListFragment"
-        android:name="com.ashwinpilgaonkar.popularmovies.UI.MovieDetailFragment"
-        tools:layout="@layout/fragment_main_activity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:ignore="MergeRootFrame"/>
 
 </LinearLayout>

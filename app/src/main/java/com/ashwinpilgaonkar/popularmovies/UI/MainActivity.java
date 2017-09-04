@@ -1,12 +1,14 @@
 package com.ashwinpilgaonkar.popularmovies.UI;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.ashwinpilgaonkar.popularmovies.Models.MovieModel;
 import com.ashwinpilgaonkar.popularmovies.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback{
 
     private boolean mTabUI;
 
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             mTabUI = true;
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_MovieDetail, new MovieDetailFragment())
+                        .replace(R.id.fragment_MovieDetail, new MovieDetailFragment(), MovieDetailFragment.TAG)
                         .commit();
             }
         } else {
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     // implements callback for Movie Item Click
     //if we have Tablet then update detail fragment into main activity otherwise launch detail
     // activity with an intent
-    /*@Override
+    @Override
     public void onItemSelected(MovieModel movie) {
         if (mTabUI) {
             Bundle arguments = new Bundle();
@@ -48,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Intent intent = new Intent(this, MovieDetailActivity.class)
                     .putExtra(MovieDetailFragment.DETAIL_MOVIE, movie);
+
             startActivity(intent);
         }
-    }*/
+    }
 }

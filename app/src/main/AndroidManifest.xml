@@ -29,6 +29,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ashwinpilgaonkar.popularmovies.UI.MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.ashwinpilgaonkar.popularmovies"
+            android:name=".ContentProvider.MovieProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

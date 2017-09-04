@@ -8,26 +8,52 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.ashwinpilgaonkar.popularmovies.Backend.Utility;
+import com.ashwinpilgaonkar.popularmovies.Models.MovieModel;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class ImageAdapter extends BaseAdapter {
 
     private Context context;
-    private String[] image;
+    private final MovieModel mMovie = new MovieModel();
+    private List<MovieModel> MovieObjects;
 
-    public ImageAdapter(Context context, String[] img) {
+    public ImageAdapter(Context context, List<MovieModel> MovieObjects) {
         this.context = context;
-        this.image = img;
+        this.MovieObjects = MovieObjects;
+    }
+
+    public void add(MovieModel MovieObject){
+        synchronized (mMovie){
+            MovieObjects.add(MovieObject);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void remove(){
+        synchronized (mMovie){
+            MovieObjects.clear();
+        }
+        notifyDataSetChanged();
+    }
+
+    public void setData(List<MovieModel> data){
+        remove();
+        for (MovieModel movie : data){
+            add(movie);
+        }
     }
 
     @Override
     public int getCount() {
-        return image.length;
+        return MovieObjects.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return image[position];
+    public MovieModel getItem(int position) {
+        return MovieObjects.get(position);
     }
 
     @Override
@@ -55,7 +81,8 @@ public class ImageAdapter extends BaseAdapter {
         else
             posterImage = (ImageView) view;
 
-        Picasso.with(context).load(image[position]).into(posterImage);
+        String poster_url = Utility.buildPosterUrl(MovieObjects.get(position).getPosterPath());
+        Picasso.with(context).load(poster_url).into(posterImage);
 
         return posterImage;
     }

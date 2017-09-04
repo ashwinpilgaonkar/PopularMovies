@@ -37,7 +37,7 @@ public class MovieDetailFragment extends Fragment {
 
     View v;
 
-    private TrailerModel trailerModel;
+    public static TrailerModel trailerModel;
     private CardView trailersCardView;
     private TrailerAdapter trailerAdapter;
 
@@ -72,11 +72,11 @@ public class MovieDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_detail_activity, container, false);
         mDetailLayout = (ScrollView) rootView.findViewById(R.id.activity_movie_detail);
 
-        if (mMovie != null) {
+        /*if (mMovie != null) {
             mDetailLayout.setVisibility(View.VISIBLE);
         } else {
             mDetailLayout.setVisibility(View.INVISIBLE);
-        }
+        }*/
         initializeUI();
         return v;
     }
@@ -221,13 +221,21 @@ public class MovieDetailFragment extends Fragment {
         reviewsListView.setAdapter(reviewAdapter);
 
         //Retrieve messages passed
-        Bundle extras = getActivity().getIntent().getExtras();
+
+        /*Bundle extras = getActivity().getIntent().getExtras();
         String POSTER_PATH = extras.getString("POSTER_PATH");
         String TITLE = extras.getString("TITLE");
         String OVERVIEW = extras.getString("OVERVIEW");
         String RDATE = extras.getString("RDATE");
         String RATING = extras.getString("RATING");
-        ID = extras.getString("ID");
+        ID = extras.getString("ID");*/
+
+        String POSTER_PATH = Utility.buildPosterUrl(mMovie.getPosterPath());
+        String TITLE = mMovie.getTitle();
+        String OVERVIEW = mMovie.getOverview();
+        String RDATE = mMovie.getReleaseDate();
+        String RATING = mMovie.getVoteAvg();
+        ID = String.valueOf(mMovie.getID());
 
         //Update UI
         Picasso.with(getActivity()).load(POSTER_PATH).into(poster);
@@ -239,11 +247,11 @@ public class MovieDetailFragment extends Fragment {
 
     private void shareTrailer() {
 
-        if (mTrailer != null) {
+        if (trailerModel != null) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, mMovie.getTitle() + "\n" +
-                    "http://www.youtube.com/watch?v=" + mTrailer.getKey()
+                    "http://www.youtube.com/watch?v=" + trailerModel.getKey()
                     + "\n'Shared Via Popular Movies App, Data is Sourced form http://themoviedb.org/' ");
             sendIntent.setType("text/plain");
 

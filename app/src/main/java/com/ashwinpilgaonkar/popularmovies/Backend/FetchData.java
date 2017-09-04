@@ -14,6 +14,7 @@ import com.ashwinpilgaonkar.popularmovies.BuildConfig;
 import com.ashwinpilgaonkar.popularmovies.Models.ReviewModel;
 import com.ashwinpilgaonkar.popularmovies.Models.TrailerModel;
 import com.ashwinpilgaonkar.popularmovies.R;
+import com.ashwinpilgaonkar.popularmovies.UI.MovieDetailFragment;
 import com.linearlistview.LinearListView;
 
 import org.json.JSONArray;
@@ -240,6 +241,7 @@ public class FetchData {
                     }
 
                     trailerModel = (TrailerModel)trailerReviewList.get(0);
+                    MovieDetailFragment.trailerModel = trailerModel;
 
                     //After Trailers are fetched, execute same AsyncTask again to fetch Reviews
                     type=2;

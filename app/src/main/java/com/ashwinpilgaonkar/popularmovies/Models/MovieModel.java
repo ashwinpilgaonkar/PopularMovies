@@ -25,6 +25,9 @@ public class MovieModel implements Parcelable {
     public static final int VOTE_AVERAGE = 5;
     public static final int OVERVIEW = 6;
 
+    public MovieModel(){
+    }
+
     public MovieModel(JSONObject movie) throws JSONException {
         this.id = movie.getInt("id");
         this.title = movie.getString("original_title");
