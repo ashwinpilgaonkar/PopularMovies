@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/review_title_text_size" />
+        android:textColor="#f4f4f4"
+        android:textSize="@dimen/title_text_size" />
 
     <TextView
         android:id="@+id/review_content"

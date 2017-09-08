@@ -32,7 +32,7 @@ public class ImageAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void remove(){
+    private void remove(){
         synchronized (mMovie){
             MovieObjects.clear();
         }
@@ -81,7 +81,7 @@ public class ImageAdapter extends BaseAdapter {
         else
             posterImage = (ImageView) view;
 
-        String poster_url = Utility.buildPosterUrl(MovieObjects.get(position).getPosterPath());
+        String poster_url = Utility.buildPosterURL(MovieObjects.get(position).getPosterPath());
         Picasso.with(context).load(poster_url).into(posterImage);
 
         return posterImage;

@@ -13,11 +13,10 @@
         <item android:id="@+id/menu_action_rating"
             android:title="@string/action_rating" />
 
+        <item android:id="@+id/menu_action_favorites"
+            android:title="@string/action_favorite" />
     </group>
 
     <item android:id="@+id/menu_action_about"
         android:title="@string/action_about" />
-    <item android:id="@+id/menu_action_favorites"
-        android:title="Favorites" />
-
 </menu>

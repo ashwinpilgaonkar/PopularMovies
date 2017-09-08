@@ -10,34 +10,33 @@ import com.ashwinpilgaonkar.popularmovies.R;
 
 public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback{
 
-    private boolean mTabUI;
+    public static boolean isTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        isTablet = getResources().getBoolean(R.bool.isTab);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //detect an handle tablet mode with Two pane UI with master detail flow
-        if (findViewById(R.id.fragment_MovieDetail) != null) {
-            mTabUI = true;
+        //if device is a Tablet, use Master/Detail flow UI (two pane)
+        if (isTablet) {
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_MovieDetail, new MovieDetailFragment(), MovieDetailFragment.TAG)
                         .commit();
             }
-        } else {
-            mTabUI = false;
         }
     }
 
-    // implements callback for Movie Item Click
-    //if we have Tablet then update detail fragment into main activity otherwise launch detail
-    // activity with an intent
+    //If device is a Tablet, load the detail fragment in the right pane
+    //else use intent to launch detail activity
     @Override
     public void onItemSelected(MovieModel movie) {
-        if (mTabUI) {
+        if (isTablet) {
             Bundle arguments = new Bundle();
             arguments.putParcelable(MovieDetailFragment.DETAIL_MOVIE, movie);
 
@@ -45,9 +44,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             fragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.MovieListFragment, fragment, MovieDetailFragment.TAG)
+                    .replace(R.id.fragment_MovieDetail, fragment, MovieDetailFragment.TAG)
                     .commit();
-        } else {
+        }
+
+        else {
             Intent intent = new Intent(this, MovieDetailActivity.class)
                     .putExtra(MovieDetailFragment.DETAIL_MOVIE, movie);
 

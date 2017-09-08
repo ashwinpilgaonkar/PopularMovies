@@ -15,13 +15,11 @@ import java.util.List;
 
 public class ReviewAdapter extends BaseAdapter {
 
-    private final Context context;
     private final LayoutInflater LayoutInflater;
     private final ReviewModel Review = new ReviewModel();
     private List<ReviewModel> ReviewObjects;
 
     public ReviewAdapter(Context context, List<ReviewModel> ReviewObjects) {
-        this.context = context;
         LayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.ReviewObjects = ReviewObjects;
     }
@@ -60,7 +58,7 @@ public class ReviewAdapter extends BaseAdapter {
         View view = convertView;
         ViewHolder viewholder;
         if (view == null){
-            view = LayoutInflater.inflate(R.layout.movie_review_item_layout, parent, false);
+            view = LayoutInflater.inflate(R.layout.review_layout, parent, false);
             viewholder = new ViewHolder(view);
             view.setTag(viewholder);
         }
@@ -74,11 +72,11 @@ public class ReviewAdapter extends BaseAdapter {
         return view;
     }
 
-    public static class ViewHolder {
-        public final TextView author;
+    private static class ViewHolder {
+        final TextView author;
         public final TextView content;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             author = (TextView) view.findViewById(R.id.review_author);
             content = (TextView) view.findViewById(R.id.review_content);
         }

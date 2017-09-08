@@ -11,10 +11,11 @@ import android.view.View;
 import com.ashwinpilgaonkar.popularmovies.Adapters.ReviewAdapter;
 import com.ashwinpilgaonkar.popularmovies.Adapters.TrailerAdapter;
 import com.ashwinpilgaonkar.popularmovies.BuildConfig;
+import com.ashwinpilgaonkar.popularmovies.Models.MovieModel;
 import com.ashwinpilgaonkar.popularmovies.Models.ReviewModel;
 import com.ashwinpilgaonkar.popularmovies.Models.TrailerModel;
 import com.ashwinpilgaonkar.popularmovies.R;
-import com.ashwinpilgaonkar.popularmovies.UI.MovieDetailFragment;
+import com.ashwinpilgaonkar.popularmovies.UI.MainActivityFragment;
 import com.linearlistview.LinearListView;
 
 import org.json.JSONArray;
@@ -29,19 +30,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class FetchData {
 
     private int type;
     private String ID; //Can store either MovieID or sort criteria (popular/toprated)
-    public String MovieJSONData;
 
-    private TrailerModel trailerModel;
     private CardView trailersCardView;
     private TrailerAdapter trailerAdapter;
 
-    private ReviewModel reviewModel;
     private CardView reviewsCardView;
     private ReviewAdapter reviewAdapter;
 
@@ -55,27 +52,18 @@ public class FetchData {
         this.ID = ID;
 
         if(type==0)
-            try {
-                //.get() gets the list returned from the AstncTask. .get(0) gets the required string from the list index 0. (String) is used to cast the Object into a String.
-                MovieJSONData = (String)new FetchDataAsyncTask().execute(ID).get().get(0);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            catch (ExecutionException e) {
-                e.printStackTrace();
-            }
+                new FetchDataAsyncTask().execute(ID);
 
         else {
             //Trailer elements
             trailersCardView = (CardView) v.findViewById(R.id.detail_trailers_cardview);
-            LinearListView trailersListView = (LinearListView) v.findViewById(R.id.trailers_ListView);
+            LinearListView trailersListView = (LinearListView) v.findViewById(R.id.trailers_list);
             trailerAdapter = new TrailerAdapter(context, new ArrayList<TrailerModel>());
             trailersListView.setAdapter(trailerAdapter);
 
             //Review elements
             reviewsCardView = (CardView) v.findViewById(R.id.detail_reviews_cardview);
-            LinearListView reviewsListView = (LinearListView) v.findViewById(R.id.reviews_ListView);
+            LinearListView reviewsListView = (LinearListView) v.findViewById(R.id.reviews_list);
             reviewAdapter = new ReviewAdapter(context, new ArrayList<ReviewModel>());
             reviewsListView.setAdapter(reviewAdapter);
 
@@ -93,17 +81,15 @@ public class FetchData {
         }
     }
 
-    public class FetchDataAsyncTask extends AsyncTask<String, Void, List<Object>> {
+    private class FetchDataAsyncTask extends AsyncTask<String, Void, List<Object>> {
 
         private final String LOG_TAG = "TrailersAsyncTask";
 
         @Override
         protected List<Object> doInBackground(String... params) {
 
-            if (params.length == 0 ){
-                Log.d(LOG_TAG,"params length 0");
+            if (params.length == 0 )
                 return null;
-            }
 
             HttpURLConnection httpURLConnection = null;
             BufferedReader reader = null;
@@ -138,7 +124,7 @@ public class FetchData {
                 httpURLConnection.connect();
 
                 InputStream inputStream = httpURLConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
 
                 if (inputStream == null)
                     return null;
@@ -147,7 +133,7 @@ public class FetchData {
 
                 String line;
                 while ((line = reader.readLine()) != null)
-                    buffer.append(line + "\n");
+                    buffer.append(line).append("\n");
 
                 if (buffer.length() == 0)
                     return null;
@@ -180,16 +166,9 @@ public class FetchData {
                     //Items defined below can contain data of type Review as well as Trailer
                     JSONObject trailerReviewJSON = new JSONObject(JSONString);
                     JSONArray trailerReviewArray = trailerReviewJSON.getJSONArray("results");
-                    List<Object> trailerReviewList = new ArrayList<>();
-
-                    List<Object> JSONStr;
+                    List<Object> trailerReviewMovielist = new ArrayList<>();
 
                     switch (type){
-
-                        //Put Movie JSON Response String into ArrayList[0] as return type is List<Object>
-                        case 0: JSONStr = new ArrayList<>();
-                                JSONStr.add(JSONString);
-                                return JSONStr;
 
                         case 1:  for(int i=0; i<trailerReviewArray.length(); i++) {
                                     JSONObject trailer = trailerReviewArray.getJSONObject(i);
@@ -197,22 +176,29 @@ public class FetchData {
                                     //This will filter the trailer list to show only those on YouTube
                                     if (trailer.getString("site").contentEquals("YouTube")) {
                                          TrailerModel trailerModel = new TrailerModel(trailer);
-                                         trailerReviewList.add(trailerModel);
+                                         trailerReviewMovielist.add(trailerModel);
                                      }
                                  }
-                                 return trailerReviewList;
+                                 return trailerReviewMovielist;
 
-                    case 2:  for(int i=0; i<trailerReviewArray.length(); i++) {
-                                JSONObject review = trailerReviewArray.getJSONObject(i);
-                                trailerReviewList.add(new ReviewModel(review));
-                            }
-                            return trailerReviewList;
+                        case 2:  for(int i=0; i<trailerReviewArray.length(); i++) {
+                                 JSONObject review = trailerReviewArray.getJSONObject(i);
+                                 trailerReviewMovielist.add(new ReviewModel(review));
+                                }
+                                return trailerReviewMovielist;
 
 
-                    default: JSONStr = new ArrayList<>();
-                             JSONStr.add(JSONString);
-                             return JSONStr;
-                }
+                        //Case 0
+                        default: JSONObject movieJson = new JSONObject(JSONString);
+                                 JSONArray movieArray = movieJson.getJSONArray("results");
+
+                                for(int i = 0; i < movieArray.length(); i++) {
+                                    JSONObject movie = movieArray.getJSONObject(i);
+                                    MovieModel movieModel = new MovieModel(movie);
+                                    trailerReviewMovielist.add(movieModel);
+                                }
+                                return trailerReviewMovielist;
+                    }
             }
 
             catch (JSONException e) {
@@ -224,10 +210,25 @@ public class FetchData {
         }
 
         @Override
-        protected void onPostExecute(List<Object> trailerReviewList) {
+        protected void onPostExecute(List<Object> trailerReviewMovielist) {
 
-            if (trailerReviewList.size()>0) {
+            if (trailerReviewMovielist.size()>0) {
 
+                //If data passed is Movie
+                if(type ==0 ){
+                    ArrayList<MovieModel> movies = new ArrayList<>();
+                    //Cast each (Movie) Object in trailersReviewMovieList to MovieModel
+                    for (Object movie : trailerReviewMovielist)
+                        movies.add((MovieModel)movie);
+
+                    if (MainActivityFragment.imageAdapter != null) {
+                        MainActivityFragment.imageAdapter.setData(movies);
+                    }
+                    MainActivityFragment.mMovies = new ArrayList<>();
+                    MainActivityFragment.mMovies.addAll(movies);
+
+                }
+                
                 //If data passed is Trailer
                 if (type == 1) {
                     //Make CardView Visible to show fetched trailers
@@ -236,12 +237,9 @@ public class FetchData {
                         trailerAdapter.remove();
 
                         //For each trailer in the list, add it to the trailer adapter by type casting the Object
-                        for (Object trailer : trailerReviewList)
+                        for (Object trailer : trailerReviewMovielist)
                             trailerAdapter.add((TrailerModel)trailer);
                     }
-
-                    trailerModel = (TrailerModel)trailerReviewList.get(0);
-                    MovieDetailFragment.trailerModel = trailerModel;
 
                     //After Trailers are fetched, execute same AsyncTask again to fetch Reviews
                     type=2;
@@ -256,11 +254,9 @@ public class FetchData {
                         reviewAdapter.remove();
 
                         //For each review in the list, add it to the trailer adapter by type casting the Object
-                        for (Object review : trailerReviewList)
+                        for (Object review : trailerReviewMovielist)
                             reviewAdapter.add((ReviewModel)review);
                     }
-
-                    reviewModel = (ReviewModel)trailerReviewList.get(0);
                 }
             }
         }

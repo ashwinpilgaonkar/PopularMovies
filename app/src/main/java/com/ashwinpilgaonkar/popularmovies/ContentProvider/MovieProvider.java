@@ -10,8 +10,8 @@ import android.support.annotation.Nullable;
 
 public class MovieProvider extends ContentProvider {
 
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private Moviedb mOpenHelper;
+    private static final UriMatcher URI_MATCHER = buildUriMatcher();
+    private Moviedb dbHelper;
 
     static final int FAV = 1;
 
@@ -19,7 +19,6 @@ public class MovieProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
 
-        // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, MovieContract.PATH_FAV, FAV);
 
         return matcher;
@@ -27,8 +26,7 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        //don't do long running task here , just initialize db but don't create tables and other stuff
-        mOpenHelper = new Moviedb(getContext());
+        dbHelper = new Moviedb(getContext());
         return true;
     }
 
@@ -36,15 +34,15 @@ public class MovieProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
-        switch (sUriMatcher.match(uri)) {
-            case FAV: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
+        switch (URI_MATCHER.match(uri)) {
+            case FAV:
+                retCursor = dbHelper.getReadableDatabase().query(
                         MovieContract.FavEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
-            }
+
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Unknown URI: " + uri);
         }
 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -54,23 +52,23 @@ public class MovieProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        final int match = sUriMatcher.match(uri);
+        final int match = URI_MATCHER.match(uri);
 
         switch (match) {
             case FAV:
                 return MovieContract.FavEntry.CONTENT_TYPE;
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Unknown URI: " + uri);
         }
     }
 
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
         Uri returnUri;
 
-        switch (sUriMatcher.match(uri)) {
+        switch (URI_MATCHER.match(uri)) {
             case FAV: {
                 long _id = db.insert(MovieContract.FavEntry.TABLE_NAME, null, values);
                 if (_id > 0) {
@@ -91,11 +89,11 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int rowsDeleted;
-        // this makes delete all rows return the number of rows deleted
+
         if (null == selection) selection = "1";
-        switch (sUriMatcher.match(uri)) {
+        switch (URI_MATCHER.match(uri)) {
             case FAV:
                 rowsDeleted = db.delete(
                         MovieContract.FavEntry.TABLE_NAME, selection, selectionArgs);
@@ -103,7 +101,7 @@ public class MovieProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        // Because a null deletes all rows
+
         if (rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
@@ -112,10 +110,10 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int rowsUpdated;
 
-        switch (sUriMatcher.match(uri)) {
+        switch (URI_MATCHER.match(uri)) {
             case FAV:
                 rowsUpdated = db.update(MovieContract.FavEntry.TABLE_NAME, values, selection,
                         selectionArgs);

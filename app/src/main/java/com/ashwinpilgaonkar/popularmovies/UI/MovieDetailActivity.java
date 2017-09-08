@@ -11,9 +11,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_movie_detail);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Info");
+        setContentView(R.layout.activity_detail);
 
         if (savedInstanceState == null) {
 
@@ -25,7 +23,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             fragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.MovieListFragment, fragment)
+                    .add(R.id.detail_fragment_container, fragment)
                     .commit();
         }
     }

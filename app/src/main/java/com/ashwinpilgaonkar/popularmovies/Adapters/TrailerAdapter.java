@@ -62,7 +62,7 @@ public class TrailerAdapter extends BaseAdapter {
         ViewHolder viewholder;
 
         if (view == null){
-            view = LayoutInflater.inflate(R.layout.movie_trailer_item_layout, parent, false);
+            view = LayoutInflater.inflate(R.layout.trailer_layout, parent, false);
             viewholder = new ViewHolder(view);
             view.setTag(viewholder);
         }

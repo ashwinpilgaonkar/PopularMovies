@@ -9,12 +9,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:supportsRtl="true">
         <activity
-            android:name="com.ashwinpilgaonkar.popularmovies.UI.MainActivity"
+            android:name=".UI.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/MovieTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,16 +21,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ashwinpilgaonkar.popularmovies.UI.MovieDetailActivity"
+            android:name=".UI.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
-            android:parentActivityName="com.ashwinpilgaonkar.popularmovies.UI.MainActivity">
+            android:parentActivityName=".UI.MainActivity"
+            android:theme="@style/MovieTheme.Detail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ashwinpilgaonkar.popularmovies.UI.MainActivity" />
         </activity>
+
         <provider
-            android:authorities="com.ashwinpilgaonkar.popularmovies"
             android:name=".ContentProvider.MovieProvider"
+            android:authorities="com.ashwinpilgaonkar.popularmovies"
             android:exported="false" />
     </application>
 

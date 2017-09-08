@@ -17,8 +17,8 @@
         android:id="@+id/trailer_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:padding="5dp"
+        android:textSize="@dimen/detail_text_size"
+        android:padding="@dimen/trailer_padding"
         android:layout_alignParentBottom="true"
         android:textColor="@android:color/white"
         android:background="#80000000" />

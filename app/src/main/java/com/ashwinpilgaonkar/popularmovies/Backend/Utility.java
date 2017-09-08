@@ -7,23 +7,26 @@ import com.ashwinpilgaonkar.popularmovies.ContentProvider.MovieContract;
 
 public class Utility {
 
-    //takes movie_id and tells whether or not that movie is favored
-    public static int isFavored(Context context, int id) {
+    static int isFavorite(Context context, int id) {
         Cursor cursor = context.getContentResolver().query(
                 MovieContract.FavEntry.CONTENT_URI,
-                null,   // projection
-                MovieContract.FavEntry.COLUMN_MOVIE_ID + " = ?", // selection
-                new String[] { Integer.toString(id) },   // selectionArgs
-                null    // sort order
+                null,
+                MovieContract.FavEntry.COLUMN_MOVIE_ID + " = ?",
+                new String[] { Integer.toString(id) },
+                null
         );
         int numRows = cursor.getCount();
         cursor.close();
         return numRows;
     }
 
-    public static String buildPosterUrl(String PosterPath) {
-        //use recommended w185 size for image
+    public static String buildPosterURL(String PosterPath) {
+        //Recommended image size is w185
         return "http://image.tmdb.org/t/p/w185" + PosterPath;
+    }
+
+    public static String buildBackdropURL(String BackdropPath) {
+        return "http://image.tmdb.org/t/p/w300" + BackdropPath;
     }
 
 }

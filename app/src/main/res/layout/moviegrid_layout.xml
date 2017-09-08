@@ -6,7 +6,7 @@
     android:layout_height="@dimen/grid_item_movie_height">
 
     <ImageView
-        android:id="@+id/grid_item_image"
+        android:id="@+id/MovieGrid_image"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

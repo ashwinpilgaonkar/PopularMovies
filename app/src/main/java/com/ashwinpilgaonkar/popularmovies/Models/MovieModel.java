@@ -18,12 +18,12 @@ public class MovieModel implements Parcelable {
     private String overview;
 
     public static final int ID = 0;
-    public static final int MOVIE_ID = 1;
-    public static final int MOVIE_TITLE = 2;
-    public static final int RELEASE_DATE = 3;
-    public static final int POSTER_PATH = 4;
-    public static final int VOTE_AVERAGE = 5;
-    public static final int OVERVIEW = 6;
+    private static final int MOVIE_ID = 1;
+    private static final int MOVIE_TITLE = 2;
+    private static final int RELEASE_DATE = 3;
+    private static final int POSTER_PATH = 4;
+    private static final int VOTE_AVERAGE = 5;
+    private static final int OVERVIEW = 6;
 
     public MovieModel(){
     }
