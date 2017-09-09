@@ -1,29 +1,39 @@
 package com.ashwinpilgaonkar.popularmovies.Backend;
 
+import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
 
 import com.ashwinpilgaonkar.popularmovies.ContentProvider.MovieContract;
 import com.ashwinpilgaonkar.popularmovies.Models.MovieModel;
 import com.ashwinpilgaonkar.popularmovies.R;
+import com.ashwinpilgaonkar.popularmovies.UI.MainActivity;
 import com.ashwinpilgaonkar.popularmovies.UI.MainActivityFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 // This class handles all operations of checking/adding/removing items to the favorites list
 public class Favorite {
 
-    private Context context;
+    private Activity activity;
     private MovieModel movie;
     private MenuItem favorite;
-    private Toast mToast;
+    private Snackbar snackbar;
     private ArrayList<MovieModel> movieList;
+
+    @BindView(R.id.activity_movie_detail) CoordinatorLayout rootView;
 
     private static final String[] FAV_COLUMNS = {
             MovieContract.FavEntry._ID,
@@ -40,20 +50,22 @@ public class Favorite {
      * If action is passed as 1, it will add/remove the current movie from the favorites list (execute AddRemoveFavoritesAsyncTask)
      */
 
-    public Favorite(Context context, MovieModel movie, MenuItem favorite, int action){
-        this.context = context;
+    public Favorite(Activity activity, MovieModel movie, MenuItem favorite, int action){
+        this.activity = activity;
         this.movie = movie;
         this.favorite = favorite;
 
         if(action==0)
             new SetFavoritesIconAsyncTask().execute();
 
-        else
+        else {
+            ButterKnife.bind(this, activity);
             new AddRemoveFavoritesAsyncTask().execute();
+        }
     }
 
-    public Favorite(Context context, ArrayList<MovieModel> movieList){
-        this.context = context;
+    public Favorite(Activity activity, ArrayList<MovieModel> movieList){
+        this.activity = activity;
         this.movieList = movieList;
 
         new FetchFavoritesAsyncTask().execute();
@@ -62,7 +74,7 @@ public class Favorite {
     private class SetFavoritesIconAsyncTask extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
-            return Utility.isFavorite(context, movie.getID());
+            return Utility.isFavorite(activity, movie.getID());
         }
 
         @Override
@@ -77,7 +89,7 @@ public class Favorite {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            return Utility.isFavorite(context, movie.getID());
+            return Utility.isFavorite(activity, movie.getID());
         }
 
         @Override
@@ -88,7 +100,7 @@ public class Favorite {
                 new AsyncTask<Void, Void, Integer>() {
                     @Override
                     protected Integer doInBackground(Void... params) {
-                        return context.getContentResolver().delete(
+                        return activity.getContentResolver().delete(
                                 MovieContract.FavEntry.CONTENT_URI,
                                 MovieContract.FavEntry.COLUMN_MOVIE_ID + " = ?",
                                 new String[]{Integer.toString(movie.getID())}
@@ -98,12 +110,34 @@ public class Favorite {
                     @Override
                     protected void onPostExecute(Integer rowsDeleted) {
                         favorite.setIcon(R.drawable.ic_favorite_border_black_24dp);
-                        if (mToast != null) {
-                            mToast.cancel();
+
+                        snackbar = Snackbar.make(rootView, activity.getString(R.string.remove_favorite_snackbar), Snackbar.LENGTH_LONG)
+                                .setAction(activity.getString(R.string.snackbar_action), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        MainActivityFragment.CHOICE="favorite";
+
+                                        //If device is a Tablet. just refresh the left pane
+                                        if(MainActivity.isTablet) {
+                                            new Favorite(activity, movieList);
+                                        }
+
+                                        else {
+                                            Intent i = new Intent(activity, MainActivity.class);
+                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            activity.startActivity(i);
+                                            MainActivityFragment.CHOICE = "favorite";
+                                        }
+                                    }
+                                });
+                        snackbar.setActionTextColor(Color.RED);
+                        snackbar.show();
+
+                        //Refresh Favorites list
+                        if(MainActivity.isTablet && MainActivityFragment.CHOICE.contentEquals("favorite")) {
+                            new Favorite(activity, movieList);
                         }
-                        mToast = Toast.makeText(context,
-                                "Removed from Favorites", Toast.LENGTH_SHORT);
-                        mToast.show();
                     }
                 }.execute();
             }
@@ -123,18 +157,39 @@ public class Favorite {
                         values.put(MovieContract.FavEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAvg());
                         values.put(MovieContract.FavEntry.COLUMN_PLOT, movie.getOverview());
 
-                        return context.getContentResolver().insert(MovieContract.FavEntry.CONTENT_URI, values);
+                        return activity.getContentResolver().insert(MovieContract.FavEntry.CONTENT_URI, values);
                     }
 
                     @Override
                     protected void onPostExecute(Uri returnUri) {
                         favorite.setIcon(R.drawable.ic_favorite_black_24dp);
-                        if (mToast != null) {
-                            mToast.cancel();
+
+                        snackbar = Snackbar.make(rootView, activity.getString(R.string.add_favorite_snackbar), Snackbar.LENGTH_LONG)
+                                            .setAction(activity.getString(R.string.snackbar_action), new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+
+                                                    MainActivityFragment.CHOICE="favorite";
+
+                                                    //If device is a Tablet. just refresh the left pane
+                                                    if(MainActivity.isTablet)
+                                                        new Favorite(activity, movieList);
+
+                                                    else {
+                                                        Intent i = new Intent(activity, MainActivity.class);
+                                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        activity.startActivity(i);
+                                                        MainActivityFragment.CHOICE = "favorite";
+                                                    }
+                                                }
+                                            });
+                        snackbar.setActionTextColor(Color.RED);
+                        snackbar.show();
+
+                        //Refresh Favorites list
+                        if(MainActivity.isTablet && MainActivityFragment.CHOICE.contentEquals("favorite")) {
+                            new Favorite(activity, movieList);
                         }
-                        mToast = Toast.makeText(context,
-                                "Added to Favorites", Toast.LENGTH_SHORT);
-                        mToast.show();
                     }
                 }.execute();
             }
@@ -150,7 +205,7 @@ public class Favorite {
 
         @Override
         protected List<MovieModel> doInBackground(String... params) {
-            Cursor cursor = context.getContentResolver().query(
+            Cursor cursor = activity.getContentResolver().query(
                     MovieContract.FavEntry.CONTENT_URI,
                     FAV_COLUMNS,
                     null,
@@ -170,6 +225,10 @@ public class Favorite {
                 }
                 movieList = new ArrayList<>();
                 movieList.addAll(movies);
+
+                //to update detail (right) pane of favorites list
+                if(MainActivity.isTablet && !MainActivityFragment.imageAdapter.isEmpty())
+                    ((MainActivityFragment.Callback) activity).onItemSelected(MainActivityFragment.imageAdapter.getItem(0));
             }
         }
 

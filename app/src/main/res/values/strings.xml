@@ -17,5 +17,8 @@
     <string name="rating_title">Rating: </string>
     <string name="trailers_title">Trailers</string>
     <string name="reviews_title">Reviews</string>
+    <string name="add_favorite_snackbar">Added to Favorites</string>
+    <string name="remove_favorite_snackbar">Removed from Favorites</string>
+    <string name="snackbar_action">VIEW</string>
     <string name="trailer_share_text">Hey, check out this awesome trailer! \nShared via Popular Movies App.</string>
 </resources>

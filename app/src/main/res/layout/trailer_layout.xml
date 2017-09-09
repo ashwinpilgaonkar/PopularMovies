@@ -21,6 +21,6 @@
         android:padding="@dimen/trailer_padding"
         android:layout_alignParentBottom="true"
         android:textColor="@android:color/white"
-        android:background="#80000000" />
+        android:background="@color/BackgroundColor" />
 
 </RelativeLayout>

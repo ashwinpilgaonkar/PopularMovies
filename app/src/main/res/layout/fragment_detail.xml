@@ -11,7 +11,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -27,11 +27,11 @@
             <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/backdrop_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/backdrop_image_height"
                 android:layout_marginTop="@dimen/backdrop_image_marginTop"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
-                android:foreground="@drawable/posterimage_gradient"/>
+                android:foreground="@drawable/backdropimage_gradient" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
@@ -66,7 +66,8 @@
                 android:layout_height="@dimen/poster_image_height"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:src="@android:drawable/ic_menu_report_image" />
+                android:src="@android:drawable/ic_menu_report_image"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/movie_title"
@@ -112,8 +113,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/movie_details_cardview_marginTop"
-                android:layout_marginLeft="@dimen/movie_details_cardview_marginLeft"
-                android:layout_marginRight="@dimen/movie_details_cardview_marginRight">
+                android:layout_marginLeft="@dimen/cardview_marginLeftRight"
+                android:layout_marginRight="@dimen/cardview_marginLeftRight">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -142,7 +143,7 @@
                             android:textSize="@dimen/title_text_size" />
 
                         <View
-                            android:layout_width="@dimen/view_detail_layoutWidth"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"  />
 
@@ -167,7 +168,7 @@
                             android:textSize="@dimen/title_text_size" />
 
                         <View
-                            android:layout_width="@dimen/view_detail_layoutWidth"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"  />
 
@@ -187,8 +188,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/trailer_cardview_marginTop"
-                android:layout_marginLeft="@dimen/trailer_cardview_marginLeft"
-                android:layout_marginRight="@dimen/trailer_cardview_marginRight"
+                android:layout_marginLeft="@dimen/cardview_marginLeftRight"
+                android:layout_marginRight="@dimen/cardview_marginLeftRight"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -226,8 +227,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/review_cardview_marginTop"
-                android:layout_marginLeft="@dimen/review_cardview_marginLeft"
-                android:layout_marginRight="@dimen/review_cardview_marginRight"
+                android:layout_marginLeft="@dimen/cardview_marginLeftRight"
+                android:layout_marginRight="@dimen/cardview_marginLeftRight"
+                android:layout_marginBottom="@dimen/cardview_marginLeftRight"
                 android:visibility="gone">
 
                 <LinearLayout

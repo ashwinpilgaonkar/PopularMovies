@@ -1,6 +1,6 @@
 package com.ashwinpilgaonkar.popularmovies.Backend;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,6 +15,7 @@ import com.ashwinpilgaonkar.popularmovies.Models.MovieModel;
 import com.ashwinpilgaonkar.popularmovies.Models.ReviewModel;
 import com.ashwinpilgaonkar.popularmovies.Models.TrailerModel;
 import com.ashwinpilgaonkar.popularmovies.R;
+import com.ashwinpilgaonkar.popularmovies.UI.MainActivity;
 import com.ashwinpilgaonkar.popularmovies.UI.MainActivityFragment;
 import com.linearlistview.LinearListView;
 
@@ -31,40 +32,47 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class FetchData {
 
     private int type;
     private String ID; //Can store either MovieID or sort criteria (popular/toprated)
 
-    private CardView trailersCardView;
+    //private CardView trailersCardView;
     private TrailerAdapter trailerAdapter;
 
-    private CardView reviewsCardView;
     private ReviewAdapter reviewAdapter;
+    private Activity activity;
+
+    @BindView(R.id.detail_trailers_cardview) CardView trailersCardView;
+    @BindView(R.id.trailers_list) LinearListView trailersListView;
+    @BindView(R.id.detail_reviews_cardview) CardView reviewsCardView;
+    @BindView(R.id.reviews_list) LinearListView reviewsListView;
 
     /*type = 0 -> Fetch Movies
       type = 1 -> Fetch Trailers
       type = 2 -> Fetch Reviews
      */
 
-    public FetchData(int type, View v, final Context context, String ID){
+    public FetchData(int type, View v, final Activity activity, String ID){
         this.type = type;
         this.ID = ID;
+        this.activity = activity;
 
         if(type==0)
                 new FetchDataAsyncTask().execute(ID);
 
         else {
+            ButterKnife.bind(this, activity);
+
             //Trailer elements
-            trailersCardView = (CardView) v.findViewById(R.id.detail_trailers_cardview);
-            LinearListView trailersListView = (LinearListView) v.findViewById(R.id.trailers_list);
-            trailerAdapter = new TrailerAdapter(context, new ArrayList<TrailerModel>());
+            trailerAdapter = new TrailerAdapter(activity, new ArrayList<TrailerModel>());
             trailersListView.setAdapter(trailerAdapter);
 
             //Review elements
-            reviewsCardView = (CardView) v.findViewById(R.id.detail_reviews_cardview);
-            LinearListView reviewsListView = (LinearListView) v.findViewById(R.id.reviews_list);
-            reviewAdapter = new ReviewAdapter(context, new ArrayList<ReviewModel>());
+            reviewAdapter = new ReviewAdapter(activity, new ArrayList<ReviewModel>());
             reviewsListView.setAdapter(reviewAdapter);
 
             new FetchDataAsyncTask().execute(ID);
@@ -75,7 +83,7 @@ public class FetchData {
                     TrailerModel TrailerModel = trailerAdapter.getItem(position);
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + TrailerModel.getKey()));
-                    context.startActivity(intent);
+                    activity.startActivity(intent);
                 }
             });
         }
@@ -224,8 +232,12 @@ public class FetchData {
                     if (MainActivityFragment.imageAdapter != null) {
                         MainActivityFragment.imageAdapter.setData(movies);
                     }
-                    MainActivityFragment.mMovies = new ArrayList<>();
-                    MainActivityFragment.mMovies.addAll(movies);
+                    MainActivityFragment.movies = new ArrayList<>();
+                    MainActivityFragment.movies.addAll(movies);
+
+                    //Update DetailView with first movie by default if device is a Tablet
+                    if(MainActivity.isTablet)
+                        ((MainActivityFragment.Callback) activity).onItemSelected(MainActivityFragment.imageAdapter.getItem(0));
 
                 }
                 

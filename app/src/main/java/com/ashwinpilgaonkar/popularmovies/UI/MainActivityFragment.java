@@ -24,6 +24,9 @@ import com.ashwinpilgaonkar.popularmovies.R;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivityFragment extends Fragment {
 
     View v;
@@ -35,14 +38,16 @@ public class MainActivityFragment extends Fragment {
     private static final String FAVORITE = "favorite";
 
     public static ImageAdapter imageAdapter;
-    public static ArrayList<MovieModel> mMovies = null;
+    public static ArrayList<MovieModel> movies = null;
 
-    private String mChoice = MOST_POPULAR;
+    public static String CHOICE = MOST_POPULAR;
+
+    @BindView(R.id.movie_gridview) GridView gridView;
 
     public MainActivityFragment() {
     }
 
-    interface Callback {
+    public interface Callback {
         void onItemSelected(MovieModel movie);
     }
 
@@ -58,33 +63,48 @@ public class MainActivityFragment extends Fragment {
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_main, container, false);
-
-        //Check if Internet connectivity is available on startup to avoid app crash.
-        checkNetworkConnectivity();
+        ButterKnife.bind(this, v);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(CHOICE_SETTING_KEY))
-                mChoice = savedInstanceState.getString(CHOICE_SETTING_KEY);
+                CHOICE = savedInstanceState.getString(CHOICE_SETTING_KEY);
 
             if (savedInstanceState.containsKey(MOVIES_DATA_KEY)) {
-                mMovies = savedInstanceState.getParcelableArrayList(MOVIES_DATA_KEY);
-                imageAdapter.setData(mMovies);
+                movies = savedInstanceState.getParcelableArrayList(MOVIES_DATA_KEY);
+                imageAdapter.setData(movies);
             }
-
-            else
-                updateUI(mChoice);
         }
 
-        else
-            updateUI(mChoice);
-
         return v;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        //Check if Internet connectivity is available on startup to avoid app crash.
+        checkNetworkConnectivity();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
+        MenuItem item;
+        switch(CHOICE){
+            case MOST_POPULAR:
+                item = menu.getItem(0);
+                item.setChecked(true);
+                break;
+
+            case TOP_RATED:
+                item = menu.getItem(1);
+                item.setChecked(true);
+                break;
+
+            case FAVORITE:
+                item = menu.getItem(2);
+                item.setChecked(true);
+        }
     }
 
     @Override
@@ -99,8 +119,8 @@ public class MainActivityFragment extends Fragment {
             if (!item.isChecked()) //To update RadioButton UI
                 item.setChecked(true);
 
-            mChoice = MOST_POPULAR;
-            updateUI(mChoice);
+            CHOICE = MOST_POPULAR;
+            checkNetworkConnectivity();
 
             return true;
         }
@@ -110,14 +130,13 @@ public class MainActivityFragment extends Fragment {
             if(!item.isChecked()) //To update RadioButton UI
                 item.setChecked(true);
 
-            mChoice = TOP_RATED;
-            updateUI(mChoice);
+            CHOICE = TOP_RATED;
+            checkNetworkConnectivity();
 
             return true;
         }
 
         if (id == R.id.menu_action_about) {
-
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
             builder.setTitle(getString(R.string.about_title));
@@ -137,31 +156,23 @@ public class MainActivityFragment extends Fragment {
             if(!item.isChecked()) //To update RadioButton UI
                 item.setChecked(true);
 
-            mChoice = FAVORITE;
-            updateUI(mChoice);
+            CHOICE = FAVORITE;
+            updateUI(CHOICE);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateUI(mChoice);
-    }
-
     public void updateUI(String choice){
-
         if (!choice.contentEquals(FAVORITE))
             new FetchData(0, v, getActivity(), choice);
 
         else
             //fetch list of movies added to favorite section
-            new Favorite(getContext(), mMovies);
+            new Favorite(getActivity(), movies);
 
         //Update GridView with images
-        GridView gridView = (GridView) v.findViewById(R.id.movie_gridview);
         imageAdapter = new ImageAdapter(getActivity(),  new ArrayList<MovieModel>());
         gridView.setAdapter(imageAdapter);
 
@@ -214,17 +225,18 @@ public class MainActivityFragment extends Fragment {
             builder.show();
         }
 
-        else
-            updateUI(MOST_POPULAR); //Sort by popularity by Default when the app starts
+        else {
+            updateUI(CHOICE);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (!mChoice.contentEquals(MOST_POPULAR)) {
-            outState.putString(CHOICE_SETTING_KEY, mChoice);
+        if (!CHOICE.contentEquals(MOST_POPULAR)) {
+            outState.putString(CHOICE_SETTING_KEY, CHOICE);
         }
-        if (mMovies != null) {
-            outState.putParcelableArrayList(MOVIES_DATA_KEY, mMovies);
+        if (movies != null) {
+            outState.putParcelableArrayList(MOVIES_DATA_KEY, movies);
         }
         super.onSaveInstanceState(outState);
     }

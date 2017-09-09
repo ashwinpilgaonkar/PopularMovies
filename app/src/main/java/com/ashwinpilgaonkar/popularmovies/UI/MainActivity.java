@@ -8,19 +8,23 @@ import android.support.v7.widget.Toolbar;
 import com.ashwinpilgaonkar.popularmovies.Models.MovieModel;
 import com.ashwinpilgaonkar.popularmovies.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback{
 
     public static boolean isTablet;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        isTablet = getResources().getBoolean(R.bool.isTab);
-
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        isTablet = getResources().getBoolean(R.bool.isTab);
 
         //if device is a Tablet, use Master/Detail flow UI (two pane)
         if (isTablet) {

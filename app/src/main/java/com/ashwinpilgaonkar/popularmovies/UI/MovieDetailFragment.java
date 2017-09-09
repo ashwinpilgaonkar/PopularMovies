@@ -2,8 +2,9 @@ package com.ashwinpilgaonkar.popularmovies.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ashwinpilgaonkar.popularmovies.Adapters.ReviewAdapter;
 import com.ashwinpilgaonkar.popularmovies.Adapters.TrailerAdapter;
@@ -30,17 +30,33 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailFragment extends Fragment {
 
-    private View v;
-    private String ID;
-    public static TrailerModel trailerModel;
     static final String DETAIL_MOVIE = "DETAIL_MOVIE";
     public static final String TAG = "MovieDetailFragment";
 
-    private MovieModel movies;
-    private Toast mToast;
+    private View v;
+    private String ID;
 
+    public static TrailerModel trailerModel;
+    private MovieModel movies;
+    
+    @BindView(R.id.detail_fragment_container) NestedScrollView DetailViewRoot;
+    @BindView(R.id.detail_toolbar) Toolbar toolbar;
+
+    //Initialize Movie UI Elements
+    @BindView(R.id.backdrop_image) ImageView backdrop;
+    @BindView(R.id.poster_image) ImageView poster;
+    @BindView(R.id.movie_title) TextView movieTitle;
+    @BindView(R.id.release_date) TextView movieRdate;
+    @BindView(R.id.movie_rating) TextView movieRating;
+    @BindView(R.id.movie_plot) TextView moviePlot;
+
+    @BindView(R.id.trailers_list) LinearListView trailersListView;
+    @BindView(R.id.reviews_list) LinearListView reviewsListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,9 +68,9 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_detail, container, false);
+        ButterKnife.bind(this, v);
 
         //Add up button to ActionBar
-        Toolbar toolbar = (Toolbar) v.findViewById(R.id.detail_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
         if(!MainActivity.isTablet)
@@ -67,15 +83,13 @@ public class MovieDetailFragment extends Fragment {
         if (arguments != null)
             movies = arguments.getParcelable(DETAIL_MOVIE);
 
-        CoordinatorLayout DetailPage = (CoordinatorLayout) v.findViewById(R.id.activity_movie_detail);
-
         if (movies != null) {
-            DetailPage.setVisibility(View.VISIBLE);
+            DetailViewRoot.setVisibility(View.VISIBLE);
             initializeUI();
         }
 
         else
-            DetailPage.setVisibility(View.INVISIBLE);
+            DetailViewRoot.setVisibility(View.INVISIBLE);
 
         return v;
     }
@@ -88,7 +102,7 @@ public class MovieDetailFragment extends Fragment {
             final MenuItem favorite = menu.findItem(R.id.action_favorite);
 
             //Check if movie is in favorites list and accordingly set the appropriate icon
-            new Favorite(getContext(), movies, favorite, 0);
+            new Favorite(getActivity(), movies, favorite, 0);
         }
 
     }
@@ -100,7 +114,7 @@ public class MovieDetailFragment extends Fragment {
             case R.id.action_favorite:
                 if (movies != null)
                     // Check if current Movie is in favorites list or not
-                    new Favorite(getContext(), movies, item, 1);
+                    new Favorite(getActivity(), movies, item, 1);
 
                 return true;
 
@@ -126,21 +140,12 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void initializeUI() {
-        //Initialize Movie UI Elements
-        ImageView backdrop = (ImageView) v.findViewById(R.id.backdrop_image);
-        ImageView poster = (ImageView) v.findViewById(R.id.poster_image);
-        TextView title_textView = (TextView) v.findViewById(R.id.movie_title);
-        TextView rdate_textView = (TextView) v.findViewById(R.id.release_date);
-        TextView rating_textView = (TextView) v.findViewById(R.id.movie_rating);
-        TextView overview_textView = (TextView) v.findViewById(R.id.movie_plot);
 
         //Trailer elements
-        LinearListView trailersListView = (LinearListView) v.findViewById(R.id.trailers_list);
         TrailerAdapter trailerAdapter = new TrailerAdapter(getActivity(), new ArrayList<TrailerModel>());
         trailersListView.setAdapter(trailerAdapter);
 
         //Review elements
-        LinearListView reviewsListView = (LinearListView) v.findViewById(R.id.reviews_list);
         ReviewAdapter reviewAdapter = new ReviewAdapter(getActivity(), new ArrayList<ReviewModel>());
         reviewsListView.setAdapter(reviewAdapter);
 
@@ -155,10 +160,10 @@ public class MovieDetailFragment extends Fragment {
         //Update UI elements
         Picasso.with(getActivity()).load(POSTER_PATH).into(backdrop);
         Picasso.with(getActivity()).load(POSTER_PATH).into(poster);
-        title_textView.setText(TITLE);
-        rdate_textView.setText(RDATE);
-        rating_textView.setText(RATING);
-        overview_textView.setText(OVERVIEW);
+        movieTitle.setText(TITLE);
+        movieRdate.setText(RDATE);
+        movieRating.setText(RATING);
+        moviePlot.setText(OVERVIEW);
     }
 
     private void ShareTrailer() {
@@ -174,11 +179,8 @@ public class MovieDetailFragment extends Fragment {
         }
 
         else {
-            if (mToast != null) {
-                mToast.cancel();
-            }
-            mToast = Toast.makeText(getActivity(), "Please wait for trailers to load", Toast.LENGTH_SHORT);
-            mToast.show();
+            Snackbar snackbar = Snackbar.make(DetailViewRoot, "Please wait for trailers to load", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 }

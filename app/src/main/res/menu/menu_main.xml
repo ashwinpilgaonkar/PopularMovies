@@ -7,8 +7,7 @@
         android:checkableBehavior="single">
 
         <item android:id="@+id/menu_action_popular"
-            android:title="@string/action_popular"
-            android:checked="true"/>
+            android:title="@string/action_popular" />
 
         <item android:id="@+id/menu_action_rating"
             android:title="@string/action_rating" />

@@ -3,22 +3,22 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:paddingTop="@dimen/review_layout_paddingTop"
+    android:paddingBottom="@dimen/review_layout_paddingBottom">
 
     <TextView
         android:id="@+id/review_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textColor="#f4f4f4"
+        android:textColor="@color/SubtitleColor"
         android:textSize="@dimen/title_text_size" />
 
     <TextView
         android:id="@+id/review_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size"
-        android:layout_marginTop="5dp" />
+        android:textSize="@dimen/review_text_size"
+        android:layout_marginTop="@dimen/review_content_marginTop" />
 
 </LinearLayout>
