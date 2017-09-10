@@ -46,8 +46,8 @@ public class Favorite {
     };
 
     /* The constructor Favorite accepts the current movie object, a reference to the favorite menu item and an action integer.
-     * If action is passed as 0, it will check if current movie is in favorites list or not (execute SetFavoritesIconAsyncTask)
-     * If action is passed as 1, it will add/remove the current movie from the favorites list (execute AddRemoveFavoritesAsyncTask)
+     * action = 0 -> check if current movie is in favorites list or not (execute SetFavoritesIconAsyncTask)
+     * action = 1 -> add/remove the current movie from the favorites list (execute AddRemoveFavoritesAsyncTask)
      */
 
     public Favorite(Activity activity, MovieModel movie, MenuItem favorite, int action){
@@ -119,9 +119,8 @@ public class Favorite {
                                         MainActivityFragment.CHOICE="favorite";
 
                                         //If device is a Tablet. just refresh the left pane
-                                        if(MainActivity.isTablet) {
+                                        if(MainActivity.isTablet)
                                             new Favorite(activity, movieList);
-                                        }
 
                                         else {
                                             Intent i = new Intent(activity, MainActivity.class);
@@ -135,9 +134,8 @@ public class Favorite {
                         snackbar.show();
 
                         //Refresh Favorites list
-                        if(MainActivity.isTablet && MainActivityFragment.CHOICE.contentEquals("favorite")) {
+                        if(MainActivity.isTablet && MainActivityFragment.CHOICE.contentEquals("favorite"))
                             new Favorite(activity, movieList);
-                        }
                     }
                 }.execute();
             }
@@ -184,12 +182,12 @@ public class Favorite {
                                                 }
                                             });
                         snackbar.setActionTextColor(Color.RED);
-                        snackbar.show();
 
                         //Refresh Favorites list
-                        if(MainActivity.isTablet && MainActivityFragment.CHOICE.contentEquals("favorite")) {
+                        if(MainActivity.isTablet && MainActivityFragment.CHOICE.contentEquals("favorite"))
                             new Favorite(activity, movieList);
-                        }
+
+                        snackbar.show();
                     }
                 }.execute();
             }
@@ -220,9 +218,9 @@ public class Favorite {
         protected void onPostExecute(List<MovieModel> movies) {
 
             if (movies != null) {
-                if (MainActivityFragment.imageAdapter != null) {
+                if (MainActivityFragment.imageAdapter != null)
                     MainActivityFragment.imageAdapter.setData(movies);
-                }
+
                 movieList = new ArrayList<>();
                 movieList.addAll(movies);
 

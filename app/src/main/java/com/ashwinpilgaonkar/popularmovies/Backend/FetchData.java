@@ -3,11 +3,17 @@ package com.ashwinpilgaonkar.popularmovies.Backend;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.ashwinpilgaonkar.popularmovies.Adapters.ReviewAdapter;
 import com.ashwinpilgaonkar.popularmovies.Adapters.TrailerAdapter;
 import com.ashwinpilgaonkar.popularmovies.BuildConfig;
@@ -23,254 +29,239 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/*  This class is used to fetch data from REST APIs
+ *  TMdb API is being used in this case to fetch
+ *  Movie data, trailers and reviews
+ *  Volley is used to handle HTTP Requests
+ */
+
 public class FetchData {
 
-    private int type;
-    private String ID; //Can store either MovieID or sort criteria (popular/toprated)
-
-    //private CardView trailersCardView;
-    private TrailerAdapter trailerAdapter;
-
-    private ReviewAdapter reviewAdapter;
     private Activity activity;
+    private List<MovieModel> MovieList = new ArrayList<>();
+    private List<TrailerModel> TrailerList = new ArrayList<>();
+    private List<ReviewModel> ReviewList = new ArrayList<>();
+    private String TAG = "FetchData";
 
-    @BindView(R.id.detail_trailers_cardview) CardView trailersCardView;
-    @BindView(R.id.trailers_list) LinearListView trailersListView;
+    private TrailerAdapter trailerAdapter;
+    private ReviewAdapter reviewAdapter;
+
+    @BindView(R.id.detail_trailers_cardview)
+    CardView trailersCardView;
+    @BindView(R.id.trailers_list)
+    LinearListView trailersListView;
     @BindView(R.id.detail_reviews_cardview) CardView reviewsCardView;
     @BindView(R.id.reviews_list) LinearListView reviewsListView;
 
-    /*type = 0 -> Fetch Movies
-      type = 1 -> Fetch Trailers
-      type = 2 -> Fetch Reviews
-     */
-
-    public FetchData(int type, View v, final Activity activity, String ID){
-        this.type = type;
-        this.ID = ID;
+    public FetchData(Activity activity){
         this.activity = activity;
-
-        if(type==0)
-                new FetchDataAsyncTask().execute(ID);
-
-        else {
-            ButterKnife.bind(this, activity);
-
-            //Trailer elements
-            trailerAdapter = new TrailerAdapter(activity, new ArrayList<TrailerModel>());
-            trailersListView.setAdapter(trailerAdapter);
-
-            //Review elements
-            reviewAdapter = new ReviewAdapter(activity, new ArrayList<ReviewModel>());
-            reviewsListView.setAdapter(reviewAdapter);
-
-            new FetchDataAsyncTask().execute(ID);
-
-            trailersListView.setOnItemClickListener(new LinearListView.OnItemClickListener() {
-                @Override
-                public void onItemClick(LinearListView parent, View view, int position, long id) {
-                    TrailerModel TrailerModel = trailerAdapter.getItem(position);
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + TrailerModel.getKey()));
-                    activity.startActivity(intent);
-                }
-            });
-        }
     }
 
-    private class FetchDataAsyncTask extends AsyncTask<String, Void, List<Object>> {
+    public void getMovies(String choice){
 
-        private final String LOG_TAG = "TrailersAsyncTask";
+        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + choice;
 
-        @Override
-        protected List<Object> doInBackground(String... params) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendQueryParameter("api_key", BuildConfig.API_KEY)
+                .build();
 
-            if (params.length == 0 )
-                return null;
+        String JSONURL = builtUri.toString();
 
-            HttpURLConnection httpURLConnection = null;
-            BufferedReader reader = null;
+        //GET Request
+        StringRequest movieStringRequest = new StringRequest(Request.Method.GET, JSONURL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String JSONStr) {
 
-            String JSONString = null;
+                        try {
+                            //getting the whole json object from the response string
+                            JSONObject movieJSONobj = new JSONObject(JSONStr);
 
-            try {
+                            //get results JSON object
+                            JSONArray MoviesArray = movieJSONobj.getJSONArray("results");
 
-                final String BASE_URL;
+                            //loop through every movie in the array
+                            for (int i = 0; i < MoviesArray.length(); i++) {
 
-                switch (type){
-                    case 0: BASE_URL = "http://api.themoviedb.org/3/movie/" + params[0]; //params[0] contains sort criteria (popular/top rated)
-                            break;
+                                //getting the json object of each movie
+                                JSONObject movieObject = MoviesArray.getJSONObject(i);
 
-                    case 1: BASE_URL = "http://api.themoviedb.org/3/movie/" + params[0] + "/videos"; //MovieID passed as params[0]
-                            break;
+                                //creating a movie object and giving it the values from json object
+                                MovieModel movieModel = new MovieModel(movieObject);
+                                MovieList.add(movieModel);
+                            }
 
-                    case 2: BASE_URL = "http://api.themoviedb.org/3/movie/" + params[0] + "/reviews"; //MovieID passed as params[0]
-                            break;
+                            if (MovieList.size()>0) {
 
-                    default: BASE_URL = "http://api.themoviedb.org/3/movie/" + params[0]; //case 0 is default
-                }
-
-                Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter("api_key", BuildConfig.API_KEY)
-                        .build();
-
-                URL url = new URL(builtUri.toString());
-
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.connect();
-
-                InputStream inputStream = httpURLConnection.getInputStream();
-                StringBuilder buffer = new StringBuilder();
-
-                if (inputStream == null)
-                    return null;
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null)
-                    buffer.append(line).append("\n");
-
-                if (buffer.length() == 0)
-                    return null;
-
-                JSONString = buffer.toString();
-
-            } catch (IOException e){
-                Log.e(LOG_TAG,"IOException Error " + e);
-                return null;
-            }
-
-            finally {
-
-                if (httpURLConnection != null)
-                    httpURLConnection.disconnect();
-
-                if (reader != null){
-                    try {
-                        reader.close();
-                    }
-
-                    catch (IOException e) {
-                        Log.e(LOG_TAG,"IOException Error " + e);
-                    }
-                }
-            }
-
-            //Get Movie/Trailers/Reviews from JSON
-            try {
-                    //Items defined below can contain data of type Review as well as Trailer
-                    JSONObject trailerReviewJSON = new JSONObject(JSONString);
-                    JSONArray trailerReviewArray = trailerReviewJSON.getJSONArray("results");
-                    List<Object> trailerReviewMovielist = new ArrayList<>();
-
-                    switch (type){
-
-                        case 1:  for(int i=0; i<trailerReviewArray.length(); i++) {
-                                    JSONObject trailer = trailerReviewArray.getJSONObject(i);
-
-                                    //This will filter the trailer list to show only those on YouTube
-                                    if (trailer.getString("site").contentEquals("YouTube")) {
-                                         TrailerModel trailerModel = new TrailerModel(trailer);
-                                         trailerReviewMovielist.add(trailerModel);
-                                     }
-                                 }
-                                 return trailerReviewMovielist;
-
-                        case 2:  for(int i=0; i<trailerReviewArray.length(); i++) {
-                                 JSONObject review = trailerReviewArray.getJSONObject(i);
-                                 trailerReviewMovielist.add(new ReviewModel(review));
+                                if (MainActivityFragment.imageAdapter != null) {
+                                    MainActivityFragment.imageAdapter.setData(MovieList);
                                 }
-                                return trailerReviewMovielist;
+                                MainActivityFragment.movies = new ArrayList<>();
+                                MainActivityFragment.movies.addAll(MovieList);
 
+                                //Update DetailView with first movie by default if device is a Tablet
+                                if (MainActivity.isTablet)
+                                    ((MainActivityFragment.Callback) activity).onItemSelected(MainActivityFragment.imageAdapter.getItem(0));
+                            }
 
-                        //Case 0
-                        default: JSONObject movieJson = new JSONObject(JSONString);
-                                 JSONArray movieArray = movieJson.getJSONArray("results");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_LONG);
+                        toast.show();
+                        Log.e(TAG, String.valueOf(error));
+                    }
+                });
 
-                                for(int i = 0; i < movieArray.length(); i++) {
-                                    JSONObject movie = movieArray.getJSONObject(i);
-                                    MovieModel movieModel = new MovieModel(movie);
-                                    trailerReviewMovielist.add(movieModel);
+        //creating a request queue
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+
+        //adding the string request to request queue
+        requestQueue.add(movieStringRequest);
+
+    }
+
+    public void getTrailers(String id){
+
+        ButterKnife.bind(this, activity);
+        trailerAdapter = new TrailerAdapter(activity, new ArrayList<TrailerModel>());
+        trailersListView.setAdapter(trailerAdapter);
+
+        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + id + "/videos";
+
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendQueryParameter("api_key", BuildConfig.API_KEY)
+                .build();
+
+        String JSONURL = builtUri.toString();
+
+        //GET Request
+        StringRequest trailerStringRequest = new StringRequest(Request.Method.GET, JSONURL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String JSONStr) {
+
+                        try {
+                            JSONObject trailerJSONobj = new JSONObject(JSONStr);
+                            JSONArray TrailersArray = trailerJSONobj.getJSONArray("results");
+
+                            for (int i=0; i < TrailersArray.length(); i++) {
+                                JSONObject trailerObject = TrailersArray.getJSONObject(i);
+
+                                //This will filter the trailer list to show only those on YouTube
+                                if (trailerObject.getString("site").contentEquals("YouTube")) {
+                                    TrailerModel trailerModel = new TrailerModel(trailerObject);
+                                    TrailerList.add(trailerModel);
                                 }
-                                return trailerReviewMovielist;
+                            }
+
+                            if (TrailerList.size()>0) {
+                                //Make CardView Visible to show fetched trailers
+                                trailersCardView.setVisibility(View.VISIBLE);
+                                if (trailerAdapter != null) {
+                                    trailerAdapter.remove();
+
+                                    for (TrailerModel trailer : TrailerList)
+                                        trailerAdapter.add(trailer);
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_LONG);
+                        toast.show();
+                        Log.e(TAG, String.valueOf(error));
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+
+        requestQueue.add(trailerStringRequest);
+
+        trailersListView.setOnItemClickListener(new LinearListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(LinearListView parent, View view, int position, long id) {
+                TrailerModel TrailerModel = trailerAdapter.getItem(position);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + TrailerModel.getKey()));
+                activity.startActivity(intent);
             }
+        });
+    }
 
-            catch (JSONException e) {
-                Log.e(LOG_TAG, "JSONException Error " + e );
-            }
+    public void getReviews(String id){
 
-            //Default return type in case fetch attempts fail
-            return null;
-        }
+        ButterKnife.bind(this, activity);
+        reviewAdapter = new ReviewAdapter(activity, new ArrayList<ReviewModel>());
+        reviewsListView.setAdapter(reviewAdapter);
 
-        @Override
-        protected void onPostExecute(List<Object> trailerReviewMovielist) {
+        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + id + "/reviews";
 
-            if (trailerReviewMovielist.size()>0) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendQueryParameter("api_key", BuildConfig.API_KEY)
+                .build();
 
-                //If data passed is Movie
-                if(type ==0 ){
-                    ArrayList<MovieModel> movies = new ArrayList<>();
-                    //Cast each (Movie) Object in trailersReviewMovieList to MovieModel
-                    for (Object movie : trailerReviewMovielist)
-                        movies.add((MovieModel)movie);
+        String JSONURL = builtUri.toString();
 
-                    if (MainActivityFragment.imageAdapter != null) {
-                        MainActivityFragment.imageAdapter.setData(movies);
+        //GET Request
+        StringRequest reviewStringRequest = new StringRequest(Request.Method.GET, JSONURL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String JSONStr) {
+
+                        try {
+                            JSONObject reviewJSONobj = new JSONObject(JSONStr);
+                            JSONArray ReviewsArray = reviewJSONobj.getJSONArray("results");
+
+                            for (int i=0; i < ReviewsArray.length(); i++) {
+                                JSONObject reviewObject = ReviewsArray.getJSONObject(i);
+                                ReviewModel reviewModel = new ReviewModel(reviewObject);
+                                ReviewList.add(reviewModel);
+                            }
+
+                            if (ReviewList.size()>0) {
+                                //Make CardView Visible to show fetched reviews
+                                reviewsCardView.setVisibility(View.VISIBLE);
+                                if (reviewAdapter != null) {
+                                    reviewAdapter.remove();
+
+                                    for (ReviewModel review : ReviewList)
+                                        reviewAdapter.add(review);
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    MainActivityFragment.movies = new ArrayList<>();
-                    MainActivityFragment.movies.addAll(movies);
-
-                    //Update DetailView with first movie by default if device is a Tablet
-                    if(MainActivity.isTablet)
-                        ((MainActivityFragment.Callback) activity).onItemSelected(MainActivityFragment.imageAdapter.getItem(0));
-
-                }
-                
-                //If data passed is Trailer
-                if (type == 1) {
-                    //Make CardView Visible to show fetched trailers
-                    trailersCardView.setVisibility(View.VISIBLE);
-                    if (trailerAdapter != null) {
-                        trailerAdapter.remove();
-
-                        //For each trailer in the list, add it to the trailer adapter by type casting the Object
-                        for (Object trailer : trailerReviewMovielist)
-                            trailerAdapter.add((TrailerModel)trailer);
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_LONG);
+                        toast.show();
+                        Log.e(TAG, String.valueOf(error));
                     }
+                });
 
-                    //After Trailers are fetched, execute same AsyncTask again to fetch Reviews
-                    type=2;
-                    new FetchDataAsyncTask().execute(ID);
-                }
-
-                //If data passed is Review
-                else if (type == 2) {
-                    //Make CardView Visible to show fetched reviews
-                    reviewsCardView.setVisibility(View.VISIBLE);
-                    if (reviewAdapter != null) {
-                        reviewAdapter.remove();
-
-                        //For each review in the list, add it to the trailer adapter by type casting the Object
-                        for (Object review : trailerReviewMovielist)
-                            reviewAdapter.add((ReviewModel)review);
-                    }
-                }
-            }
-        }
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        requestQueue.add(reviewStringRequest);
     }
 }

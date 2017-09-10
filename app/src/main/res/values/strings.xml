@@ -10,6 +10,7 @@
     <string name="no_internet_connectivity">Could not connect to the internet</string>
     <string name="about_title">About</string>
     <string name="about_text">Popular Movies: Stage 2 \n\nUdacity\'s Android Developer Nanodegree Project 2 \n\nCreated by Ashwin Pilgaonkar</string>
+    <string name="volley_error">Error retrieving data</string>
 
     <!-- Movie Details -->
     <string name="movie_details_title">Details</string>

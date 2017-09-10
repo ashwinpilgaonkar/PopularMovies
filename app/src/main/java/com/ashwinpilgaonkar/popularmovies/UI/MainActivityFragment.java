@@ -166,7 +166,8 @@ public class MainActivityFragment extends Fragment {
 
     public void updateUI(String choice){
         if (!choice.contentEquals(FAVORITE))
-            new FetchData(0, v, getActivity(), choice);
+            //fetch list of movies
+            new FetchData(getActivity()).getMovies(CHOICE);
 
         else
             //fetch list of movies added to favorite section

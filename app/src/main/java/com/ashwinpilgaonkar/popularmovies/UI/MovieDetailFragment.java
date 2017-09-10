@@ -38,7 +38,6 @@ public class MovieDetailFragment extends Fragment {
     static final String DETAIL_MOVIE = "DETAIL_MOVIE";
     public static final String TAG = "MovieDetailFragment";
 
-    private View v;
     private String ID;
 
     public static TrailerModel trailerModel;
@@ -67,7 +66,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, v);
 
         //Add up button to ActionBar
@@ -131,11 +130,10 @@ public class MovieDetailFragment extends Fragment {
         super.onStart();
 
         if(movies != null){
-            /* Fetch Trailers and Reviews
-             * Passing 1 as an arguement starts fetching Trailers
-             * Once it's done, onPostExecutes re-executes the AsyncTask with 2 as an arguement to fetch Reviews
-             */
-            new FetchData(1, v, getActivity(), ID);
+            //fetch movie trailers and reviews
+            FetchData fetchData = new FetchData(getActivity());
+            fetchData.getTrailers(ID);
+            fetchData.getReviews(ID);
         }
     }
 
