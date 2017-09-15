@@ -157,7 +157,7 @@ public class MainActivityFragment extends Fragment {
             builder.setTitle(getString(R.string.about_title));
             builder.setMessage(getString(R.string.about_text));
 
-            builder.setPositiveButton("OK",
+            builder.setPositiveButton(getString(R.string.about_positive),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                         }
@@ -168,17 +168,17 @@ public class MainActivityFragment extends Fragment {
         }
 
         if (id == R.id.menu_action_theme) {
-            final CharSequence[] items = {"Light","Dark"};
+            final CharSequence[] items = {getString(R.string.theme_light),getString(R.string.theme_dark)};
             int checkeditem;
 
-            if(MainActivity.theme.contentEquals("light"))
+            if(MainActivity.theme.contentEquals(MainActivity.lightTheme))
                 checkeditem = 0;
 
             else
                 checkeditem = 1;
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Theme");
+            builder.setTitle(getString(R.string.action_theme));
             builder.setSingleChoiceItems(items, checkeditem, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
 
@@ -186,18 +186,18 @@ public class MainActivityFragment extends Fragment {
                             .getLaunchIntentForPackage( getActivity().getBaseContext().getPackageName() );
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                if(item==0 && !MainActivity.theme.contentEquals("light")) {
-                    MainActivity.ed.putString("theme", "light");
+                if(item==0 && !MainActivity.theme.contentEquals(MainActivity.lightTheme)) {
+                    MainActivity.ed.putString(MainActivity.Theme, MainActivity.lightTheme);
                     MainActivity.ed.apply();
                     startActivity(i);
-                    Toast.makeText(getActivity(), "Theme applied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.theme_apply), Toast.LENGTH_SHORT).show();
                 }
 
-                else if(item==1 && !MainActivity.theme.contentEquals("dark")){
-                    MainActivity.ed.putString("theme", "dark");
+                else if(item==1 && !MainActivity.theme.contentEquals(MainActivity.darkTheme)){
+                    MainActivity.ed.putString(MainActivity.Theme, MainActivity.darkTheme);
                     MainActivity.ed.apply();
                     startActivity(i);
-                    Toast.makeText(getActivity(), "Theme applied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.theme_apply), Toast.LENGTH_SHORT).show();
                 }
 
                 themeDialog.dismiss();
@@ -253,17 +253,17 @@ public class MainActivityFragment extends Fragment {
         if(!(activeNetworkInfo != null && activeNetworkInfo.isConnected())) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setCancelable(false);
-            builder.setTitle("Error");
+            builder.setTitle(getString(R.string.no_internet_connectivity_title));
             builder.setMessage(getString(R.string.no_internet_connectivity));
 
-            builder.setPositiveButton("Retry",
+            builder.setPositiveButton(getString(R.string.no_internet_connectivity_positive),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             checkNetworkConnectivity();
                         }
                     });
 
-            builder.setNegativeButton("Exit",
+            builder.setNegativeButton(getString(R.string.no_internet_connectivity_negative),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             System.exit(0);

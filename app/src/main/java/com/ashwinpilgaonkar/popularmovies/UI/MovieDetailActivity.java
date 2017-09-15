@@ -12,7 +12,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //Set theme
-        if (MainActivity.theme.contentEquals("light"))
+        if (MainActivity.theme.contentEquals(MainActivity.lightTheme))
             setTheme(R.style.MovieTheme_Detail_Light);
 
         else

@@ -21,6 +21,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     SharedPreferences sharedPrefs;
     public static SharedPreferences.Editor ed;
 
+    final static String darkTheme = "dark";
+    final static String lightTheme = "light";
+    final static String Theme = "theme";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,21 +72,22 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
 
     public void initSharedPrefs(){
-        sharedPrefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        final String themeSharedPrefs = "ThemePrefs";
+        sharedPrefs = getSharedPreferences(themeSharedPrefs, MODE_PRIVATE);
         ed = sharedPrefs.edit();
 
         //Set default SharedPrefs
-        if(!sharedPrefs.contains("theme")) {
-            ed.putString("theme", "dark");
+        if(!sharedPrefs.contains(Theme)) {
+            ed.putString(Theme, lightTheme);
             ed.apply();
-            theme = sharedPrefs.getString("theme", null);
+            theme = sharedPrefs.getString(Theme, null);
         }
 
         else
-            theme = sharedPrefs.getString("theme", null);
+            theme = sharedPrefs.getString(Theme, null);
 
         //Set theme
-        if (theme.contentEquals("light"))
+        if (theme.contentEquals(lightTheme))
             setTheme(R.style.MovieTheme_Light);
 
         else

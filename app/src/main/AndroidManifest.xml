@@ -13,7 +13,7 @@
         <activity
             android:name=".UI.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/MovieTheme">
+            android:theme="@style/MovieTheme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
             android:name=".UI.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
             android:parentActivityName=".UI.MainActivity"
-            android:theme="@style/MovieTheme.Detail">
+            android:theme="@style/MovieTheme.Detail.Light">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ashwinpilgaonkar.popularmovies.UI.MainActivity" />

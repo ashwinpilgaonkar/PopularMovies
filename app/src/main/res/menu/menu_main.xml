@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.ashwinpilgaonkar.popularmovies.MainActivity">
 
-    <group android:id="@+id/group"
-        android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
 
         <item android:id="@+id/menu_action_popular"
             android:title="@string/action_popular" />

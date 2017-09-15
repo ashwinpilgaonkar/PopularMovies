@@ -37,9 +37,9 @@
                 android:id="@+id/movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="6dp"
-                android:paddingTop="3dp"
-                android:paddingLeft="16dp"
+                android:paddingBottom="@dimen/movie_title_paddingBottom"
+                android:paddingTop="@dimen/movie_title_paddingTop"
+                android:paddingLeft="@dimen/movie_title_paddingLeft"
                 android:layout_gravity="bottom"
                 android:background="@color/BackgroundColor"
                 android:textColor="@color/TitleColor"
@@ -67,7 +67,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/parent_linearlayout_paddingLeftRight"
+        android:paddingRight="@dimen/parent_linearlayout_paddingLeftRight">
 
         <include layout="@layout/movie_details_container"/>
 

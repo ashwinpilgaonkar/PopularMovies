@@ -67,7 +67,7 @@ public class MovieDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         //Set theme again to avoid glitches when screen is rotated
-        if (MainActivity.theme.contentEquals("light"))
+        if (MainActivity.theme.contentEquals(MainActivity.lightTheme))
             getActivity().setTheme(R.style.MovieTheme_Detail_Light);
 
         else
@@ -104,7 +104,7 @@ public class MovieDetailFragment extends Fragment {
                         collapsingToolbarLayout.setTitle(movieTitle.getText());
                         isShow = true;
                     } else if (isShow) {
-                        collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                        collapsingToolbarLayout.setTitle(" ");//careful there should a space between double quote otherwise it wont work
                         isShow = false;
                     }
                 }
@@ -208,7 +208,7 @@ public class MovieDetailFragment extends Fragment {
                     "http://www.youtube.com/watch?v=" + trailerModel.getKey()
                     + "\n\n" + getString(R.string.trailer_share_text));
             sendIntent.setType("text/plain");
-            startActivity(Intent.createChooser(sendIntent, "Share via:"));
+            startActivity(Intent.createChooser(sendIntent, getString(R.string.trailer_share_title)));
         }
 
         else

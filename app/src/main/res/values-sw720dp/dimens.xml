@@ -1,0 +1,11 @@
+<resources>
+    <!-- Movie Details -->
+    <dimen name="parent_linearlayout_paddingLeftRight">0dp</dimen>
+    <dimen name="movie_details_paddingTop">10dp</dimen>
+    <dimen name="movie_details_paddingLeft">0dp</dimen>
+    <dimen name="movie_rating_paddingTop">20dp</dimen>
+    <dimen name="movie_rating_paddingBottom">60dp</dimen>
+    <dimen name="movie_rating_paddingLeft">25dp</dimen>
+    <dimen name="movie_rdate_paddingLeft">20dp</dimen>
+    <dimen name="backdrop_image_height">400dp</dimen>
+</resources>

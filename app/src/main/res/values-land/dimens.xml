@@ -1,0 +1,4 @@
+<resources>
+    <!-- Movie Details -->
+    <dimen name="parent_linearlayout_paddingLeftRight">50dp</dimen>
+</resources>
