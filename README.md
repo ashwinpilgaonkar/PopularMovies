@@ -1,7 +1,7 @@
 # Popular Movies: Stage 2
 ![Popular Movies](https://github.com/ashwinpilgaonkar/PopularMovies/blob/master/Screenshots/popmovies_icon.jpg)  
 **Udacity Android Developer Nanodegree: Project 2**  
-A Material Design inspired movie browser application for Android built from scratch using the TMDb API. 
+An Android application that allow users to discover the most popular movies playing. It's a movie browser built from scratch and inspired by Material Design.
 
 # Usage
 * `Git clone` the repo and import it in Android Studio
