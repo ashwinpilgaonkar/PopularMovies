@@ -1,7 +1,7 @@
 # Popular Movies: Stage 2
 ![Popular Movies](https://github.com/ashwinpilgaonkar/PopularMovies/blob/master/Screenshots/popmovies_icon.jpg)  
 **Udacity Android Developer Nanodegree: Project 2**  
-A simple app that shows a grid of popular movies. Created for Udacity's Android App Development Nanodegree Program.
+A Material Design inspired movie browser application for Android built from scratch using the TMDb API. 
 
 # Usage
 * `Git clone` the repo and import it in Android Studio
