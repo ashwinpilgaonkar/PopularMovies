@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,7 +24,9 @@ import com.ashwinpilgaonkar.popularmovies.Models.TrailerModel;
 import com.ashwinpilgaonkar.popularmovies.R;
 import com.ashwinpilgaonkar.popularmovies.UI.MainActivity;
 import com.ashwinpilgaonkar.popularmovies.UI.MainActivityFragment;
+import com.ashwinpilgaonkar.popularmovies.UI.MovieDetailFragment;
 import com.linearlistview.LinearListView;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,15 +50,14 @@ public class FetchData {
     private List<MovieModel> MovieList = new ArrayList<>();
     private List<TrailerModel> TrailerList = new ArrayList<>();
     private List<ReviewModel> ReviewList = new ArrayList<>();
+    @BindView(R.id.backdrop_image) ImageView backdrop;
     private String TAG = "FetchData";
 
     private TrailerAdapter trailerAdapter;
     private ReviewAdapter reviewAdapter;
 
-    @BindView(R.id.detail_trailers_cardview)
-    CardView trailersCardView;
-    @BindView(R.id.trailers_list)
-    LinearListView trailersListView;
+    @BindView(R.id.detail_trailers_cardview) CardView trailersCardView;
+    @BindView(R.id.trailers_list) LinearListView trailersListView;
     @BindView(R.id.detail_reviews_cardview) CardView reviewsCardView;
     @BindView(R.id.reviews_list) LinearListView reviewsListView;
 
@@ -177,7 +179,15 @@ public class FetchData {
                                 }
                             }
 
-                        } catch (JSONException e) {
+                            if(!TrailerList.isEmpty()) {
+                                MovieDetailFragment.trailerModel = TrailerList.get(0);
+                            }
+
+                            else
+                                MovieDetailFragment.trailerModel = null;
+                        }
+
+                        catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -185,7 +195,7 @@ public class FetchData {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_SHORT);
                         toast.show();
                         Log.e(TAG, String.valueOf(error));
                     }
@@ -255,7 +265,7 @@ public class FetchData {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_SHORT);
                         toast.show();
                         Log.e(TAG, String.valueOf(error));
                     }
@@ -263,5 +273,49 @@ public class FetchData {
 
         RequestQueue requestQueue = Volley.newRequestQueue(activity);
         requestQueue.add(reviewStringRequest);
+    }
+
+    public void getBackdropimg(String id){
+        ButterKnife.bind(this, activity);
+        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + id + "/images";
+
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendQueryParameter("api_key", BuildConfig.API_KEY)
+                .build();
+
+        String JSONURL = builtUri.toString();
+
+        //GET Request
+        StringRequest backdropStringRequest = new StringRequest(Request.Method.GET, JSONURL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String JSONStr) {
+
+                        try {
+                            JSONObject backdropJSONobj = new JSONObject(JSONStr);
+                            JSONArray BackdropsArray = backdropJSONobj.getJSONArray("backdrops");
+
+                            //get the path to a random backdrop image of the movie (we dont need to fetch all of them)
+                            JSONObject backdropObject = BackdropsArray.getJSONObject((int)(Math.random()*BackdropsArray.length()-1));
+
+                            String poster_url = Utility.buildBackdropURL(backdropObject.getString("file_path"));
+                            Picasso.with(activity).load(poster_url).skipMemoryCache().into(backdrop);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast toast = Toast.makeText(activity, activity.getString(R.string.volley_error), Toast.LENGTH_SHORT);
+                        toast.show();
+                        Log.e(TAG, String.valueOf(error));
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(activity);
+        requestQueue.add(backdropStringRequest);
     }
 }

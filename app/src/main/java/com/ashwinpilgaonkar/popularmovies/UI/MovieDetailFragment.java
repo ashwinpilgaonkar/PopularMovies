@@ -2,7 +2,8 @@ package com.ashwinpilgaonkar.popularmovies.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.ashwinpilgaonkar.popularmovies.UI.MainActivity.isTablet;
+
 public class MovieDetailFragment extends Fragment {
 
     static final String DETAIL_MOVIE = "DETAIL_MOVIE";
@@ -42,6 +45,7 @@ public class MovieDetailFragment extends Fragment {
 
     public static TrailerModel trailerModel;
     private MovieModel movies;
+    private MenuItem share;
     
     @BindView(R.id.detail_fragment_container) NestedScrollView DetailViewRoot;
     @BindView(R.id.detail_toolbar) Toolbar toolbar;
@@ -56,9 +60,19 @@ public class MovieDetailFragment extends Fragment {
 
     @BindView(R.id.trailers_list) LinearListView trailersListView;
     @BindView(R.id.reviews_list) LinearListView reviewsListView;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.app_bar) AppBarLayout appBarLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        //Set theme again to avoid glitches when screen is rotated
+        if (MainActivity.theme.contentEquals("light"))
+            getActivity().setTheme(R.style.MovieTheme_Detail_Light);
+
+        else
+            getActivity().setTheme(R.style.MovieTheme_Detail);
+
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
@@ -72,10 +86,29 @@ public class MovieDetailFragment extends Fragment {
         //Add up button to ActionBar
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-        if(!MainActivity.isTablet)
+        if(!isTablet)
             ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getActivity().setTitle("");
+
+            appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                boolean isShow = false;
+                int scrollRange = -1;
+
+                @Override
+                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                    if (scrollRange == -1) {
+                        scrollRange = appBarLayout.getTotalScrollRange();
+                    }
+                    if (scrollRange + verticalOffset == 0) {
+                        collapsingToolbarLayout.setTitle(movieTitle.getText());
+                        isShow = true;
+                    } else if (isShow) {
+                        collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                        isShow = false;
+                    }
+                }
+            });
 
         Bundle arguments = getArguments();
 
@@ -99,6 +132,7 @@ public class MovieDetailFragment extends Fragment {
         if (movies != null) {
             inflater.inflate(R.menu.menu_detail, menu);
             final MenuItem favorite = menu.findItem(R.id.action_favorite);
+            share = menu.findItem(R.id.action_share);
 
             //Check if movie is in favorites list and accordingly set the appropriate icon
             new Favorite(getActivity(), movies, favorite, 0);
@@ -134,6 +168,7 @@ public class MovieDetailFragment extends Fragment {
             FetchData fetchData = new FetchData(getActivity());
             fetchData.getTrailers(ID);
             fetchData.getReviews(ID);
+            fetchData.getBackdropimg(ID);
         }
     }
 
@@ -149,14 +184,13 @@ public class MovieDetailFragment extends Fragment {
 
         //get data elements from MovieModel object
         ID = String.valueOf(movies.getID());
-        String POSTER_PATH = Utility.buildBackdropURL(movies.getPosterPath());
+        String POSTER_PATH = Utility.buildPosterURL(movies.getPosterPath());
         String TITLE = movies.getTitle();
         String OVERVIEW = movies.getOverview();
         String RDATE = movies.getReleaseDate();
         String RATING = movies.getVoteAvg();
 
         //Update UI elements
-        Picasso.with(getActivity()).load(POSTER_PATH).into(backdrop);
         Picasso.with(getActivity()).load(POSTER_PATH).into(poster);
         movieTitle.setText(TITLE);
         movieRdate.setText(RDATE);
@@ -167,6 +201,7 @@ public class MovieDetailFragment extends Fragment {
     private void ShareTrailer() {
 
         if (trailerModel != null) {
+            share.setEnabled(true);
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, movies.getTitle() + "\n" +
@@ -176,9 +211,7 @@ public class MovieDetailFragment extends Fragment {
             startActivity(Intent.createChooser(sendIntent, "Share via:"));
         }
 
-        else {
-            Snackbar snackbar = Snackbar.make(DetailViewRoot, "Please wait for trailers to load", Snackbar.LENGTH_LONG);
-            snackbar.show();
-        }
+        else
+            share.setEnabled(false);
     }
 }

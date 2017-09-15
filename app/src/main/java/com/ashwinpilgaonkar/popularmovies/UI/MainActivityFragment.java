@@ -2,6 +2,7 @@ package com.ashwinpilgaonkar.popularmovies.UI;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.ashwinpilgaonkar.popularmovies.Adapters.ImageAdapter;
 import com.ashwinpilgaonkar.popularmovies.Backend.Favorite;
@@ -41,6 +43,7 @@ public class MainActivityFragment extends Fragment {
     public static ArrayList<MovieModel> movies = null;
 
     public static String CHOICE = MOST_POPULAR;
+    AlertDialog themeDialog;
 
     @BindView(R.id.movie_gridview) GridView gridView;
 
@@ -64,6 +67,9 @@ public class MainActivityFragment extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, v);
+
+        if(MainActivity.theme.contentEquals("light"))
+            v.setBackgroundColor(0xffe6e6e6);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(CHOICE_SETTING_KEY))
@@ -136,6 +142,15 @@ public class MainActivityFragment extends Fragment {
             return true;
         }
 
+        if (id == R.id.menu_action_favorites){
+            if(!item.isChecked()) //To update RadioButton UI
+                item.setChecked(true);
+
+            CHOICE = FAVORITE;
+            updateUI(CHOICE);
+            return true;
+        }
+
         if (id == R.id.menu_action_about) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -152,12 +167,44 @@ public class MainActivityFragment extends Fragment {
             return true;
         }
 
-        if (id == R.id.menu_action_favorites){
-            if(!item.isChecked()) //To update RadioButton UI
-                item.setChecked(true);
+        if (id == R.id.menu_action_theme) {
+            final CharSequence[] items = {"Light","Dark"};
+            int checkeditem;
 
-            CHOICE = FAVORITE;
-            updateUI(CHOICE);
+            if(MainActivity.theme.contentEquals("light"))
+                checkeditem = 0;
+
+            else
+                checkeditem = 1;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Theme");
+            builder.setSingleChoiceItems(items, checkeditem, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+
+                    Intent i = getActivity().getBaseContext().getPackageManager()
+                            .getLaunchIntentForPackage( getActivity().getBaseContext().getPackageName() );
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                if(item==0 && !MainActivity.theme.contentEquals("light")) {
+                    MainActivity.ed.putString("theme", "light");
+                    MainActivity.ed.apply();
+                    startActivity(i);
+                    Toast.makeText(getActivity(), "Theme applied", Toast.LENGTH_SHORT).show();
+                }
+
+                else if(item==1 && !MainActivity.theme.contentEquals("dark")){
+                    MainActivity.ed.putString("theme", "dark");
+                    MainActivity.ed.apply();
+                    startActivity(i);
+                    Toast.makeText(getActivity(), "Theme applied", Toast.LENGTH_SHORT).show();
+                }
+
+                themeDialog.dismiss();
+                }
+            });
+            themeDialog = builder.create();
+            themeDialog.show();
             return true;
         }
 

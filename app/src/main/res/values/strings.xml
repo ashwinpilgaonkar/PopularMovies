@@ -4,6 +4,7 @@
     <string name="action_rating">Rating</string>
     <string name="action_favorite">Favorites</string>
     <string name="action_about">About</string>
+    <string name="action_theme">Theme</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
 
     <!-- Movie Main -->
@@ -21,5 +22,6 @@
     <string name="add_favorite_snackbar">Added to Favorites</string>
     <string name="remove_favorite_snackbar">Removed from Favorites</string>
     <string name="snackbar_action">VIEW</string>
+    <string name="trailers_loading">Please wait for trailers to load</string>
     <string name="trailer_share_text">Hey, check out this awesome trailer! \nShared via Popular Movies App.</string>
 </resources>

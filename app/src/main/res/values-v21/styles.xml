@@ -1,8 +1,15 @@
 <resources>
-            <style name="MovieTheme.Detail" parent="@style/MovieTheme">
+        <style name="MovieTheme.Detail" parent="@style/MovieTheme">
                 <item name="windowActionBar">false</item>
                 <item name="windowNoTitle">true</item>
                 <item name="android:windowDrawsSystemBarBackgrounds">true</item>
                 <item name="android:statusBarColor">@android:color/transparent</item>
+        </style>
+
+        <style name="MovieTheme.Detail.Light" parent="@style/MovieTheme.Light">
+            <item name="windowActionBar">false</item>
+            <item name="windowNoTitle">true</item>
+            <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+            <item name="android:statusBarColor">@android:color/transparent</item>
         </style>
 </resources>

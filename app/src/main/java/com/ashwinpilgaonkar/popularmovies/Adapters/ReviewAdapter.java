@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.ashwinpilgaonkar.popularmovies.Models.ReviewModel;
 import com.ashwinpilgaonkar.popularmovies.R;
+import com.ashwinpilgaonkar.popularmovies.UI.MainActivity;
 
 import java.util.List;
 
@@ -67,6 +68,10 @@ public class ReviewAdapter extends BaseAdapter {
         viewholder = (ViewHolder) view.getTag();
 
         viewholder.author.setText(review.getAuthor());
+
+        if(MainActivity.theme.contentEquals("light"))
+            viewholder.author.setTextColor(0xff000000);
+
         viewholder.content.setText(Html.fromHtml(review.getContent()));
 
         return view;

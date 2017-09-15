@@ -27,7 +27,7 @@
             <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/backdrop_image"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/backdrop_image_height"
+                android:layout_height="280dp"
                 android:layout_marginTop="@dimen/backdrop_image_marginTop"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
@@ -67,7 +67,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
 
         <include layout="@layout/movie_details_container"/>
 

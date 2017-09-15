@@ -5,5 +5,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MovieTheme.Light" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
     <style name="AppBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 </resources>

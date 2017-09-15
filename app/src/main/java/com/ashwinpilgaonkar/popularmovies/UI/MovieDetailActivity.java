@@ -11,6 +11,13 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Set theme
+        if (MainActivity.theme.contentEquals("light"))
+            setTheme(R.style.MovieTheme_Detail_Light);
+
+        else
+            setTheme(R.style.MovieTheme_Detail);
+
         setContentView(R.layout.activity_detail);
 
         if (savedInstanceState == null) {
