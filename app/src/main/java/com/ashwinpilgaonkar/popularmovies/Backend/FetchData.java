@@ -3,7 +3,7 @@ package com.ashwinpilgaonkar.popularmovies.Backend;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -67,7 +67,7 @@ public class FetchData {
 
     public void getMovies(String choice){
 
-        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + choice;
+        final String BASE_URL = "https://api.themoviedb.org/3/movie/" + choice;
 
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter("api_key", BuildConfig.API_KEY)
@@ -140,7 +140,7 @@ public class FetchData {
         trailerAdapter = new TrailerAdapter(activity, new ArrayList<TrailerModel>());
         trailersListView.setAdapter(trailerAdapter);
 
-        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + id + "/videos";
+        final String BASE_URL = "https://api.themoviedb.org/3/movie/" + id + "/videos";
 
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter("api_key", BuildConfig.API_KEY)
@@ -210,7 +210,7 @@ public class FetchData {
             public void onItemClick(LinearListView parent, View view, int position, long id) {
                 TrailerModel TrailerModel = trailerAdapter.getItem(position);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + TrailerModel.getKey()));
+                intent.setData(Uri.parse("https://www.youtube.com/watch?v=" + TrailerModel.getKey()));
                 activity.startActivity(intent);
             }
         });
@@ -222,7 +222,7 @@ public class FetchData {
         reviewAdapter = new ReviewAdapter(activity, new ArrayList<ReviewModel>());
         reviewsListView.setAdapter(reviewAdapter);
 
-        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + id + "/reviews";
+        final String BASE_URL = "https://api.themoviedb.org/3/movie/" + id + "/reviews";
 
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter("api_key", BuildConfig.API_KEY)
@@ -277,7 +277,7 @@ public class FetchData {
 
     public void getBackdropimg(String id){
         ButterKnife.bind(this, activity);
-        final String BASE_URL = "http://api.themoviedb.org/3/movie/" + id + "/images";
+        final String BASE_URL = "https://api.themoviedb.org/3/movie/" + id + "/images";
 
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter("api_key", BuildConfig.API_KEY)

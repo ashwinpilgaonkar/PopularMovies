@@ -2,12 +2,12 @@ package com.ashwinpilgaonkar.popularmovies.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import androidx.fragment.app.Fragment;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -205,7 +205,7 @@ public class MovieDetailFragment extends Fragment {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, movies.getTitle() + "\n" +
-                    "http://www.youtube.com/watch?v=" + trailerModel.getKey()
+                    "https://www.youtube.com/watch?v=" + trailerModel.getKey()
                     + "\n\n" + getString(R.string.trailer_share_text));
             sendIntent.setType("text/plain");
             startActivity(Intent.createChooser(sendIntent, getString(R.string.trailer_share_title)));

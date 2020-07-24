@@ -22,11 +22,11 @@ public class Utility {
 
     public static String buildPosterURL(String PosterPath) {
         //Recommended image size is w185
-        return "http://image.tmdb.org/t/p/w185" + PosterPath;
+        return "https://image.tmdb.org/t/p/w500" + PosterPath;
     }
 
     public static String buildBackdropURL(String BackdropPath) {
-        return "http://image.tmdb.org/t/p/w300" + BackdropPath;
+        return "https://image.tmdb.org/t/p/w780" + BackdropPath;
     }
 
 }

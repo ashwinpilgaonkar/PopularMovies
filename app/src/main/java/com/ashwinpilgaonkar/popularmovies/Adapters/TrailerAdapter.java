@@ -70,7 +70,7 @@ public class TrailerAdapter extends BaseAdapter {
         final TrailerModel trailermodel = getItem(position);
         viewholder = (ViewHolder) view.getTag();
 
-        String TrailerThumbnailURL = "http://img.youtube.com/vi/" + trailermodel.getKey() + "/0.jpg";
+        String TrailerThumbnailURL = "https://img.youtube.com/vi/" + trailermodel.getKey() + "/0.jpg";
         Picasso.with(context).load(TrailerThumbnailURL).into(viewholder.thumbnail);
         viewholder.name.setText(trailermodel.getName());
 
